@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Auto Fill Form</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: rgb(34 34 34);
+      margin: 0;
+      border: 0.5px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: rgb(34 34 34);
+      width: 250px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h3 {
+      color: #ffffff;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .button-start {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      margin-right: 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      margin-bottom: 15px;
+    }
+
+    .button-start:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    .button-stop {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #ad3737;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      margin-bottom: 15px;
+    }
+
+    .button-stop:hover {
+      background-color: #ad3737;
+      transform: scale(1.05);
+    }
+
+
+    .copyright {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #e0e0e0;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h3>Auto Fill Form</h3>
+    <div style="display: flex;">
+      <button class="button-start" id="startFill">Start Fill</button>
+      <button class="button-stop" id="stopFill">Stop Fill</button>
+    </div>
+    <div class="copyright">© 2025 - Copyright belongs to HumanTech</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

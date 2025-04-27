@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Form Auto Fill - Logoform",
+  "version": "1.0",
+  "description": "Tự động điền form Logoform.jp",
+  "permissions": [
+    "scripting",
+    "tabs",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://logoform.jp/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Auto Fill Form",
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/IMG_2764.JPEG"],
+      "matches": ["https://logoform.jp/*"]
+    }
+  ]
+}
+
