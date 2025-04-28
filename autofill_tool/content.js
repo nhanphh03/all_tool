@@ -2,7 +2,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const fetchData = async () => {
   try {
-    const response = await fetch(chrome.runtime.getURL('data/Data.csv'));
+    const response = await fetch(chrome.runtime.getURL('data/DataTest.csv'));
     if (!response.ok) throw new Error("Không thể tải file CSV.");
     const text = await response.text();
     return text.split("\n").map(row => row.split(",").map(cell => cell.trim()));
