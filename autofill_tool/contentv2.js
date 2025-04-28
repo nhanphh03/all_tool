@@ -1,128 +1,52 @@
+
+import { delay, fetchData, selectRadio, fillTextInput, fillFileInput } from './utils.js';
+
 (async () => {
-  const delay = ms => new Promise(res => setTimeout(res, ms));
-
-  // Lấy dữ liệu từ file CSV
-  const fetchData = async () => {
-    const response = await fetch(chrome.runtime.getURL('data/Data.csv'));
-    const text = await response.text();
-    const rows = text.split("\n").map(row => row.split(","));
-    return rows;
-  };
-
   const data = await fetchData();
+  if (data.length === 0) return console.error("Không có dữ liệu để xử lý");
 
-  // Hàm điền thông tin vào form
-  const autofillForm = async (row) => {
-    const formData = {
-      7: row[0], // Full name
-      1: row[1], // Date of birth
-      8: row[2], // Telephone number
-      9: row[9], // Driver's license face image name
-      10: row[10], // Driver's license back image name
-      15: "hotrocuocsong.nhatban@gmail.com" // Email address
-    };
+  for (const row of data) {
+    await delay(6000);
+    const [cell1, cell2, cell3, cell4, cell5] = row;
 
-    // Điền các giá trị vào các input, radio, checkbox...
-    await delay(1000); // Đợi trước khi điền thông tin vào form
+    // Các câu hỏi
+    if (!(await selectRadio("18", "input-58", "同意する（I agree.）"))) break;
+    if (!(await fillTextInput("7", cell1))) break;
+    if (!(await fillTextInput("1", cell2))) break;
+    if (!(await fillTextInput("8", cell3))) break;
+    if (!(await fillTextInput("2", "ベトナム"))) break;
+    if (!(await fillTextInput("14", "ベトナム"))) break;
+    if (!(await selectRadio("20", "input-106", "非免除国 (NOT countries exempt from foreign license exchange test)"))) break;
+    await delay(1500);
+    if (!(await selectRadio("22", "input-256", "ない(No)"))) break;
+    if (!(await selectCheckboxByDataItemId())) break;
+    if (!(await selectRadio("19", "input-115", "自動車(Vehicle)"))) break;
+    if (!(await fillFileInput("9", cell4))) break;
+    if (!(await fillFileInput("10", cell5))) break;
+    if (!(await fillTextInput("15", "hotrocuocsong.nhatban@gmail.com"))) break;
 
-    // Q1
-    document.querySelector(`[data-item-id="18"]`)?.checked = true; // id="input-58" (Q1)
-    document.querySelector(`#input-58`)?.checked = true;
-
-    // Điền vào các trường có thể thay đổi (data-item-id: 7, 1, 8, 9, 10)
-    Object.keys(formData).forEach(async (key) => {
-      const element = document.querySelector(`[data-item-id="${key}"]`);
-      if (element) {
-        if (element.type === 'radio') {
-          element.checked = true;
-          element.dispatchEvent(new Event("change", { bubbles: true }));
-        } else if (element.type === 'checkbox') {
-          if (!element.disabled) {
-            element.checked = true;
-            element.dispatchEvent(new Event("change", { bubbles: true }));
-          }
-        } else if (element.tagName === 'INPUT' && element.type === 'text') {
-          element.value = formData[key];
-          element.dispatchEvent(new Event("input", { bubbles: true }));
-        }
-      }
-    });
-
-    // Các trường không thay đổi (data-item-id: 18, 2, 14, 20, 19, 15)
-    // Tự động điền vào các trường mặc định
-    document.querySelector(`[data-item-id="2"]`)?.value = "ベトナム"; // data-item-id="2" mặc định điền vào "ベトナム"
-    document.querySelector(`[data-item-id="14"]`)?.value = "ベトナム"; // data-item-id="14" mặc định điền vào "ベトナム"
-    
-    // Tự động chọn radio hoặc điền email
-    document.querySelector(`#input-106`)?.checked = true; // data-item-id="20" chọn radio
-    document.querySelector(`#input-115`)?.checked = true; // data-item-id="19" chọn radio
-    document.querySelector(`[data-item-id="15"]`).value = "hotrocuocsong.nhatban@gmail.com"; // Email
-
-    // Chọn một ô trong các input từ 268 tới 424 (auto choose)
-    const inputIds = [
-      "input-268", "input-272", "input-276", "input-280", "input-284", "input-292",
-      "input-296", "input-300", "input-304", "input-308", "input-312", "input-316",
-      "input-320", "input-324", "input-328", "input-332", "input-336", "input-340",
-      "input-344", "input-348", "input-352", "input-356", "input-360", "input-364",
-      "input-368", "input-372", "input-376", "input-380", "input-384", "input-388",
-      "input-392", "input-396", "input-400", "input-404", "input-408", "input-412",
-      "input-416", "input-420", "input-424"
-    ];
-
-    for (let id of inputIds) {
-      const inputElement = document.querySelector(`#${id}`);
-      if (inputElement && !inputElement.disabled) {
-        inputElement.checked = true; // Chọn ô đầu tiên không bị disabled
-        break;
-      }
+    // Submit
+    await delay(2500);
+    const confirmBtn = document.querySelector('[data-testid="form-detail--to-confirm-button"]');
+    if (confirmBtn) {
+      confirmBtn.click();
+      console.log("Đã nhấn nút xác nhận");
+    } else {
+      console.error("Không tìm thấy nút xác nhận");
+      break;
     }
 
-    // Upload ảnh từ thư mục assets
-    try {
-      const imageUrlFace = chrome.runtime.getURL(`assets/${row[9]}`);
-      const imageUrlBack = chrome.runtime.getURL(`assets/${row[10]}`);
-      const blobFace = await fetch(imageUrlFace).then(res => res.blob());
-      const blobBack = await fetch(imageUrlBack).then(res => res.blob());
-
-      const fileFace = new File([blobFace], row[9], { type: "image/jpeg" });
-      const fileBack = new File([blobBack], row[10], { type: "image/jpeg" });
-
-      const dtFace = new DataTransfer();
-      const dtBack = new DataTransfer();
-      dtFace.items.add(fileFace);
-      dtBack.items.add(fileBack);
-
-      document.querySelectorAll('input[type="file"][data-item-id="9"]').forEach(input => {
-        input.files = dtFace.files;
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-      });
-
-      document.querySelectorAll('input[type="file"][data-item-id="10"]').forEach(input => {
-        input.files = dtBack.files;
-        input.dispatchEvent(new Event("change", { bubbles: true }));
-      });
-    } catch (err) {
-      console.error("Không thể tải ảnh:", err);
+    // Back button
+    await delay(2000);
+    const backBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.innerText.includes("最初の画面に戻る"));
+    if (backBtn) {
+      backBtn.click();
+      console.error("Quay lại màn hình đầu tiên");
+    } else {
+      console.error("Không tìm thấy nút '最初の画面に戻る'");
+      break;
     }
+  }
 
-    console.log("Đã điền thông tin và tải ảnh!");
-  };
-
-  // Hàm xử lý từng bản ghi
-  const processCsvData = async () => {
-    for (let i = 0; i < data.length; i++) {
-      const row = data[i];
-      if (row.length >= 12) {
-        await autofillForm(row); // Điền form cho bản ghi hiện tại
-        await delay(2000); // Đợi 2 giây trước khi chuyển sang bản ghi tiếp theo
-      }
-    }
-    console.log("Hoàn tất việc điền thông tin cho tất cả bản ghi!");
-  };
-
-  // Kích hoạt khi bấm nút "Start Fill"
-  document.getElementById('start-fill').addEventListener('click', async () => {
-    console.log("Bắt đầu điền thông tin...");
-    await processCsvData();
-  });
+  console.log(`Đã hoàn tất ${data.length} lần gửi form!`);
 })();
