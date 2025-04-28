@@ -1,91 +1,118 @@
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const fetchData = async () => {
+  try {
+    const response = await fetch(chrome.runtime.getURL('data/Data.csv'));
+    if (!response.ok) throw new Error("Không thể tải file CSV.");
+    const text = await response.text();
+    return text.split("\n").map(row => row.split(",").map(cell => cell.trim()));
+  } catch (error) {
+    console.error("Lỗi khi tải hoặc xử lý file CSV:", error);
+    return [];
+  }
+};
+
+const selectRadio = async (dataItemId, targetId, targetValue) => {
+  const radios = document.querySelectorAll(`input[type="radio"][data-item-id="${dataItemId}"]`);
+  if (!radios.length) return logWarning(`Không tìm thấy radio nào với data-item-id="${dataItemId}"`);
+
+  const targetRadio = Array.from(radios).find(radio => radio.id === targetId) || 
+                      Array.from(radios).find(radio => radio.value === targetValue);
+  if (targetRadio) {
+    targetRadio.checked = true;
+    targetRadio.dispatchEvent(new Event('change', { bubbles: true }));
+    console.log(`Đã chọn radio id="${targetRadio.id}" value="${targetRadio.value}"`);
+    return true;
+  }
+  return logWarning(`Không tìm thấy radio phù hợp với id="${targetId}" hoặc value="${targetValue}"`);
+};
+
+const fillTextInput = async (dataItemId, text) => {
+  const input = document.querySelector(`input[type="text"][data-item-id="${dataItemId}"]`);
+  if (!input) return logWarning(`Không tìm thấy input text với data-item-id="${dataItemId}"`);
+  
+  input.value = text;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+  console.log(`Đã điền "${text}" vào input data-item-id="${dataItemId}"`);
+  return true;
+};
+
+const fillFileInput = async (dataItemId, path) => {
+  const input = document.querySelector(`input[type="file"][data-item-id="${dataItemId}"]`);
+  if (!input) return logWarning(`Không tìm thấy input file với data-item-id="${dataItemId}"`);
+  
+  try {
+    const imageUrl = path.startsWith('chrome-extension://') ? path : chrome.runtime.getURL(path);
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const blob = await response.blob();
+    const fileName = path.split('/').pop() || "upload-file";
+    const file = new File([blob], fileName, { type: blob.type });
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    input.files = dataTransfer.files;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+
+    console.log(`Đã upload file "${fileName}" vào input data-item-id="${dataItemId}"`);
+    return true;
+  } catch (err) {
+    console.error(`Không thể tải ảnh từ ${path}:`, err);
+    return false;
+  }
+};
+
+const logWarning = (message) => {
+  console.warn(message);
+  return false;
+};
+// ==== Hàm chính chạy tuần tự ====
 (async () => {
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-    const imageUrl = chrome.runtime.getURL("assets/IMG_2764.JPEG");
-  
-    for (let i = 1; i <= 3; i++) {
-      console.log(`Lần thực hiện ${i}`);
-  
-      const formData = {
-        4: "段差ができている",
-        37: "住所"
-      };
-  
-      const formDataText = {
-        1: "Viet Nam",
-        35: "HAf fffff",
-        39: "Nội dung điền vào input có data-item-id='1'"
-      };
-  
-      await delay(1000);
-  
-      // Chọn radio
-      document.querySelectorAll('input[type="radio"][data-item-id]').forEach(radio => {
-        const id = radio.dataset.itemId;
-        if (formData[id] && radio.value === formData[id]) {
-          radio.checked = true;
-          radio.dispatchEvent(new Event("change", { bubbles: true }));
-          console.log(`Radio [${id}] đã chọn`);
-        }
-      });
-  
-      await delay(1000);
-  
-      // Điền input text
-      document.querySelectorAll('input[type="text"][data-item-id]').forEach(input => {
-        const id = input.dataset.itemId;
-        if (formDataText[id]) {
-          input.value = formDataText[id];
-          input.dispatchEvent(new Event("input", { bubbles: true }));
-          console.log(`Input [${id}] = "${formDataText[id]}"`);
-        }
-      });
-  
-      // Upload ảnh
-      try {
-        const blob = await fetch(imageUrl).then(res => res.blob());
-        const file = new File([blob], "IMG_2764.JPEG", { type: "image/jpeg" });
-        const dt = new DataTransfer();
-        dt.items.add(file);
-  
-        document.querySelectorAll('input[type="file"][accept*="image"]').forEach(input => {
-          input.files = dt.files;
-          input.dispatchEvent(new Event("change", { bubbles: true }));
-          console.log("Ảnh đã được upload");
-        });
-      } catch (err) {
-        console.error("Không thể tải ảnh:", err);
-      }
-  
-      await delay(1500);
-  
-      // Nhấn nút xác nhận
-      const confirmBtn = document.querySelector('[data-testid="form-detail--to-confirm-button"]');
-      if (confirmBtn) {
-        confirmBtn.click();
-        console.log("Đã nhấn nút xác nhận");
-      } else {
-        console.error("Không tìm thấy nút xác nhận");
-        break;
-      }
-  
-      await delay(4000);
-  
-      // Nhấn nút "Trở lại màn hình đầu tiên"
-      const backBtn = Array.from(document.querySelectorAll('button')).find(btn =>
-        btn.innerText.includes("最初の画面に戻る")
-      );
-  
-      if (backBtn) {
-        backBtn.click();
-        console.log("Quay lại màn hình đầu tiên");
-      } else {
-        console.error("Không tìm thấy nút '最初の画面に戻る'");
-        break;
-      }
-  
-      await delay(4000);
+  const data = await fetchData();
+
+  for (const row of data) {
+    if (row.length < 4) continue;
+
+    await delay(6000);
+
+    const [cell1, cell2, cell3, cell4] = row;
+    console.error(row)
+
+    if (!(await selectRadio("4", "input-48", "穴が空いている"))) break;
+    if (!(await fillFileInput("6", 'assets/' + cell1))) break;
+    if (!(await fillFileInput("8", 'assets/' + cell2))) break;
+    if (!(await selectRadio("37", "input-80", "住所"))) break;
+
+    await delay(1000);
+
+    if (!(await fillTextInput("35", cell3))) break;
+    if (!(await fillTextInput("1", cell4))) break;
+
+    // Submit
+    await delay(2500);
+    const confirmBtn = document.querySelector('[data-testid="form-detail--to-confirm-button"]');
+    if (confirmBtn) {
+      confirmBtn.click();
+      console.log("Đã nhấn nút xác nhận");
+    } else {
+      console.error("Không tìm thấy nút xác nhận");
+      break;
     }
-  
-    console.log("Đã hoàn tất 3 lần gửi form!");
-  })();
-  
+
+    // Back button
+    await delay(2000);
+    const backBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.innerText.includes("最初の画面に戻る"));
+    if (backBtn) {
+      backBtn.click();
+      console.error("Quay lại màn hình đầu tiên");
+    } else {
+      console.error("Không tìm thấy nút '最初の画面に戻る'");
+      break;
+    }
+  }
+
+  console.log(`Đã hoàn tất ${totalRuns} lần gửi form!`);
+})();
