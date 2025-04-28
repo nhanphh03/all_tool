@@ -38,6 +38,26 @@ const fillTextInput = async (dataItemId, text) => {
   return true;
 };
 
+const autoFillDateReserve = async () =>{
+  const inputIds = [
+    "input-268", "input-272", "input-276", "input-280", "input-284", "input-292",
+    "input-296", "input-300", "input-304", "input-308", "input-312", "input-316",
+    "input-320", "input-324", "input-328", "input-332", "input-336", "input-340",
+    "input-344", "input-348", "input-352", "input-356", "input-360", "input-364",
+    "input-368", "input-372", "input-376", "input-380", "input-384", "input-388",
+    "input-392", "input-396", "input-400", "input-404", "input-408", "input-412",
+    "input-416", "input-420", "input-424"
+  ];
+
+  for (let id of inputIds) {
+    const inputElement = document.querySelector(`#${id}`);
+    if (inputElement && !inputElement.disabled) {
+      inputElement.checked = true; // Chọn ô đầu tiên không bị disabled
+      break;
+    }
+  }
+};
+
 const fillFileInput = async (dataItemId, path) => {
   const input = document.querySelector(`input[type="file"][data-item-id="${dataItemId}"]`);
   if (!input) return logWarning(`Không tìm thấy input file với data-item-id="${dataItemId}"`);
@@ -98,7 +118,7 @@ const logWarning = (message) => {
     // Q8
     await selectRadio("22", "input-256", "ない(No)");
     // Q10
-    // todo
+    await autoFillDateReserve();
     // Q11
     await selectRadio("19", "input-115", "自動車(Vehicle)");
     // Q12
