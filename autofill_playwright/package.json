@@ -5,7 +5,8 @@
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "pkg . --out-path dist"
   },
   "author": "Pham Huu Nhan",
   "license": "MIT",
@@ -22,9 +23,10 @@
     "scripts": [
       "config.js"
     ],
-    "targets": [
-      "node18-win-x64"
-    ],
-    "outputPath": "dist"
+    "targets": ["node18-win-x64"],
+    "outputPath": "dist",
+    "win": {
+      "icon": "icon.ico"
+    }
   }
 }
