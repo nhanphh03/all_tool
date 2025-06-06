@@ -1,0 +1,30 @@
+{
+  "name": "auto-fill-form",
+  "version": "1.0.0",
+  "description": "Auto-fill form using Playwright and CSV",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Pham Huu Nhan",
+  "license": "MIT",
+  "dependencies": {
+    "csv-parse": "^5.5.0",
+    "fs-extra": "^11.2.0",
+    "playwright": "^1.52.0"
+  },
+  "pkg": {
+    "assets": [
+      "data/*.csv",
+      "assets/*"
+    ],
+    "scripts": [
+      "config.js"
+    ],
+    "targets": [
+      "node18-win-x64"
+    ],
+    "outputPath": "dist"
+  }
+}
