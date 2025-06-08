@@ -6,6 +6,9 @@ const config = require('./config');
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+const phoneNumber = '07045633348';
+const national = 'ベトナム';
+
 const uploadFile = async (page, dataItemId, fileName) => {
     const input = await page.$(`input[type="file"][data-item-id="${dataItemId}"]`);
     const filePath = path.resolve(config.paths.assets, fileName);
@@ -15,6 +18,32 @@ const uploadFile = async (page, dataItemId, fileName) => {
     }, dataItemId);
     console.log(`Đã upload file ${fileName} vào data-item-id="${dataItemId}"`);
 };
+
+const selectCheckboxByValue = async (page, dataItemId, value, checked = true) => {
+    const selector = `input[type="checkbox"][data-item-id="${dataItemId}"][value="${value}"]`;
+    try {
+        await page.waitForSelector(selector, { timeout: 5000 });
+        const checkbox = await page.$(selector);
+
+        if (!checkbox) {
+            console.error(`Không tìm thấy checkbox với data-item-id="${dataItemId}" và value="${value}"`);
+            return;
+        }
+
+        const isChecked = await checkbox.isChecked();
+
+        if (isChecked !== checked) {
+            await checkbox.click({ force: true });
+            console.log(`Đã ${checked ? 'check' : 'uncheck'} checkbox với value="${value}" và data-item-id="${dataItemId}"`);
+        } else {
+            console.log(`Checkbox với value="${value}" và data-item-id="${dataItemId}" đã ở trạng thái ${checked ?
+                'checked' : 'unchecked'}, không cần click.`);
+        }
+    } catch (error) {
+        console.error(`Lỗi khi chọn checkbox: ${error.message}`);
+    }
+};
+
 
 const selectRadioByValue = async (page, dataItemId, value) => {
     const selector = `input[type="radio"][data-item-id="${dataItemId}"][value="${value}"]`;
@@ -28,7 +57,7 @@ const selectRadioByValue = async (page, dataItemId, value) => {
             return;
         }
 
-        await radio.click({ force: true }); // dùng force để bỏ qua overlay
+        await radio.click({ force: true });
         console.log(`Đã click radio với value="${value}" và data-item-id="${dataItemId}"`);
     } catch (error) {
         console.error(`Lỗi khi chọn radio: ${error.message}`);
@@ -36,97 +65,98 @@ const selectRadioByValue = async (page, dataItemId, value) => {
 };
 
 
-const fillInput = async (page, dataItemId, value) => {
-    const selector = `input[type="text"][data-item-id="${dataItemId}"]`;
-
+const fillInputAutoDetect = async (page, dataItemId, value) => {
+    const selector = `[data-item-id="${dataItemId}"]`;
     try {
         await page.waitForSelector(selector, { timeout: 3000 });
-        await page.fill(selector, value);
-        console.log(`Đã nhập "${value}" vào data-item-id="${dataItemId}"`);
+
+        const tagName = await page.$eval(selector, el => el.tagName.toLowerCase());
+        if (tagName === 'input' || tagName === 'textarea') {
+            await page.fill(selector, value);
+            console.log(`Đã nhập "${value}" vào ${tagName} với data-item-id="${dataItemId}"`);
+        } else {
+            console.error(`Thẻ không hợp lệ: ${tagName}`);
+        }
     } catch (error) {
         console.error(`Không thể nhập dữ liệu: ${error.message}`);
     }
 };
 
 
+const confirm = async (page) => {
+        const confirmBtn = await page.$('[data-testid="form-detail--to-confirm-button"]');
+        if (confirmBtn) {
+            await confirmBtn.click();
+            console.log("Đã nhấn nút xác nhận");
+        } else {
+            console.error("Không tìm thấy nút xác nhận");
+        }
+};
 
 (async () => {
     const content = await fs.readFile(config.paths.csv, 'utf8');
-    const rows = parse(content, {trim: true});
+    const rows = parse(content, { trim: true });
 
     const browser = await chromium.launch({
         headless: config.browser.headless,
         slowMo: config.browser.slowMo,
         timeout: config.browser.timeout
     });
-    let totalRuns = 0;
 
+    const pages = [];
 
     for (const row of rows) {
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto(config.url);
-        await delay(3000)
-
-        await selectRadioByValue(page, '4', '穴が空いている')
-
-        await uploadFile(page, '6', row[1])
-
-        await uploadFile(page, '8', row[1])
-
-        await selectRadioByValue(page, '37', '住所')
-
-        await delay(1000)
-
-        await fillInput(page, '35', row[0])
-
-
+        pages.push({ page, row });
     }
 
+    for (const { page, row } of pages) {
+        console.log(`${row[0]} - ${row[1]} - ${row[2]} - ${row[3]} - ${row[4]}`);
 
+        //Q1:
+        await selectCheckboxByValue(page, '18', '同意する（I agree.）');
+        //Q2:
+        await fillInputAutoDetect(page, '7', row[0]);
+        //Q3:
+        await fillInputAutoDetect(page, '1', row[1]);
+        //Q4:
+        await fillInputAutoDetect(page, '8', phoneNumber);
+        //Q5:
+        await fillInputAutoDetect(page, '2', national);
+        //Q6:
+        await fillInputAutoDetect(page, '14', national);
+        //Q7:
+        await selectRadioByValue(page, '20', '非免除国 (NOT countries exempt from foreign license exchange test)');
+        await delay(1500);
+        //Q8:
+        await selectRadioByValue(page, '22', 'ない(No)');
+        //Q10:
+        // await autoFillDateReserve();
+        //Q11:
+        if (row[2] === 'Motorcycle'){
+            await selectRadioByValue(page, '19', 'バイク(Motorcycle)');
+        }else if (row[2] === 'Vehicle') {
+            await selectRadioByValue(page, '19', '自動車(Vehicle)');
+        } else {
+            await selectRadioByValue(page, '19', '原付(Moped)');
+        }
+        //Q12:
+        // await uploadFile(page, '9', row[0]);
+        console.log( row[3]);
+        //Q13:
+        console.log( row[4]);
+        // await uploadFile(page, '10', row[0]);
+        //Q14:
+        await fillInputAutoDetect(page, '15', 'hotrocuocsong.nhatban@gmail.com');
 
+        // Submit step 1:
+        await confirm(page);
+        await delay(1500);
 
+        // sent no wait
+    }
 
-    //     await page.locator('input[type="radio"][data-item-id="37"]').nth(0).check();
-    //     console.log('Đã chọn radio data-item-id="37"');
-    //
-    //     const fillInput = async (dataItemId, value) => {
-    //         const input = await page.$(`input[type="text"][data-item-id="${dataItemId}"]`);
-    //         await input.fill(value);
-    //         await page.evaluate((id) => {
-    //             const el = document.querySelector(`input[type="text"][data-item-id="${id}"]`);
-    //             if (el) el.style.border = '2px solid red';
-    //         }, dataItemId);
-    //         console.log(`Đã nhập "${value}" vào data-item-id="${dataItemId}"`);
-    //     };
-    //
-    //     await delay(1000);
-    //     await fillInput("35", text1);
-    //     await fillInput("1", text2);
-    //
-    //     await delay(config.delays.beforeSubmit);
-    //     const confirmBtn = await page.$('[data-testid="form-detail--to-confirm-button"]');
-    //     if (confirmBtn) {
-    //         await confirmBtn.click();
-    //         console.log("Đã nhấn nút xác nhận");
-    //     } else {
-    //         console.error("Không tìm thấy nút xác nhận");
-    //         break;
-    //     }
-    //
-    //     await delay(2000);
-    //     const backBtn = await page.locator('button', {hasText: "最初の画面に戻る"}).first();
-    //     if (await backBtn.count()) {
-    //         await backBtn.click();
-    //         console.log("Đã quay lại để tiếp tục dòng tiếp theo");
-    //     } else {
-    //         console.error("Không tìm thấy nút quay lại");
-    //         break;
-    //     }
-    //
-    //     totalRuns++;
-    // }
-
-    console.log(`Hoàn tất: ${totalRuns} dòng đã được gửi`);
-    // await browser.close();
+    console.log(`Hoàn tất: ${rows.length} dòng đã được gửi`);
 })();

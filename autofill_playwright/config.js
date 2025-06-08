@@ -1,14 +1,15 @@
 const path = require('path');
 
 module.exports = {
-    url: 'https://logoform.jp/form/6fa7/dourokanri',
+    url: 'file:///home/nhanph/Project/Tool/test.html',
+    // url: 'https://logoform.jp/form/6fa7/dourokanri',
     browser: {
         headless: false,
         slowMo: 100,
         timeout: 30000
     },
     paths: {
-        csv: path.join(__dirname, 'data', 'data.csv'),
+        csv: path.join(__dirname, 'data', 'data2.csv'),
         assets: path.join(__dirname, 'assets')
     },
     delays: {
