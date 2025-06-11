@@ -44,7 +44,6 @@ const selectCheckboxByValue = async (page, dataItemId, value, checked = true) =>
     }
 };
 
-
 const selectRadioByValue = async (page, dataItemId, value) => {
     const selector = `input[type="radio"][data-item-id="${dataItemId}"][value="${value}"]`;
     try {
@@ -64,7 +63,6 @@ const selectRadioByValue = async (page, dataItemId, value) => {
     }
 };
 
-
 const fillInputAutoDetect = async (page, dataItemId, value) => {
     const selector = `[data-item-id="${dataItemId}"]`;
     try {
@@ -81,7 +79,6 @@ const fillInputAutoDetect = async (page, dataItemId, value) => {
         console.error(`Không thể nhập dữ liệu: ${error.message}`);
     }
 };
-
 
 const confirm = async (page) => {
         const confirmBtn = await page.$('[data-testid="form-detail--to-confirm-button"]');
@@ -114,7 +111,7 @@ const confirm = async (page) => {
 
     for (const { page, row } of pages) {
         console.log(`${row[0]} - ${row[1]} - ${row[2]} - ${row[3]} - ${row[4]}`);
-
+        await fillInputAutoDetect(page, "157", '2007-02-07');
         //Q1:
         await selectCheckboxByValue(page, '18', '同意する（I agree.）');
         //Q2:
@@ -153,7 +150,7 @@ const confirm = async (page) => {
 
         // Submit step 1:
         await confirm(page);
-        await delay(1500);
+        await delay(2500);
 
         // sent no wait
     }

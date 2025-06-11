@@ -6,7 +6,7 @@ document.getElementById('startFill').addEventListener('click', async () => {
 
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            files: ['contentv2.js']
+            files: ['content.js']
         });
 
         alert("Đã bắt đầu Auto Fill trên logoform.jp!");
