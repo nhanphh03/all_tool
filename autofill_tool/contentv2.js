@@ -121,6 +121,8 @@ const logWarning = (message) => {
     const data = await fetchData();
     if (data.length === 0) return console.error("Không có dữ liệu để xử lý");
 
+    await fillTextInput("7", cell1);
+
     for (const row of data) {
         await delay(6000);
         const [cell1, cell2, cell3, cell4, cell5] = row;

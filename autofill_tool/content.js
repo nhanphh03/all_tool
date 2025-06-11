@@ -69,50 +69,56 @@ const logWarning = (message) => {
   console.warn(message);
   return false;
 };
-// ==== Hàm chính chạy tuần tự ====
+
+
 (async () => {
-  const data = await fetchData();
 
-  for (const row of data) {
-    if (row.length < 4) continue;
 
-    await delay(6000);
+  await fillTextInput("157", '2007-02-07');
 
-    const [cell1, cell2, cell3, cell4] = row;
-    console.error(row)
 
-    if (!(await selectRadio("4", "input-48", "穴が空いている"))) break;
-    if (!(await fillFileInput("6", 'assets/' + cell1))) break;
-    if (!(await fillFileInput("8", 'assets/' + cell2))) break;
-    if (!(await selectRadio("37", "input-80", "住所"))) break;
-
-    await delay(1000);
-
-    if (!(await fillTextInput("35", cell3))) break;
-    if (!(await fillTextInput("1", cell4))) break;
-
-    // Submit
-    await delay(2500);
-    const confirmBtn = document.querySelector('[data-testid="form-detail--to-confirm-button"]');
-    if (confirmBtn) {
-      confirmBtn.click();
-      console.log("Đã nhấn nút xác nhận");
-    } else {
-      console.error("Không tìm thấy nút xác nhận");
-      break;
-    }
-
-    // Back button
-    await delay(2000);
-    const backBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.innerText.includes("最初の画面に戻る"));
-    if (backBtn) {
-      backBtn.click();
-      console.error("Quay lại màn hình đầu tiên");
-    } else {
-      console.error("Không tìm thấy nút '最初の画面に戻る'");
-      break;
-    }
-  }
-
-  console.log(`Đã hoàn tất ${totalRuns} lần gửi form!`);
+  // const data = await fetchData();
+  //
+  // for (const row of data) {
+  //   if (row.length < 4) continue;
+  //
+  //   await delay(6000);
+  //
+  //   const [cell1, cell2, cell3, cell4] = row;
+  //   console.error(row)
+  //
+  //   if (!(await selectRadio("4", "input-48", "穴が空いている"))) break;
+  //   if (!(await fillFileInput("6", 'assets/' + cell1))) break;
+  //   if (!(await fillFileInput("8", 'assets/' + cell2))) break;
+  //   if (!(await selectRadio("37", "input-80", "住所"))) break;
+  //
+  //   await delay(1000);
+  //
+  //   if (!(await fillTextInput("35", cell3))) break;
+  //   if (!(await fillTextInput("1", cell4))) break;
+  //
+  //   // Submit
+  //   await delay(2500);
+  //   const confirmBtn = document.querySelector('[data-testid="form-detail--to-confirm-button"]');
+  //   if (confirmBtn) {
+  //     confirmBtn.click();
+  //     console.log("Đã nhấn nút xác nhận");
+  //   } else {
+  //     console.error("Không tìm thấy nút xác nhận");
+  //     break;
+  //   }
+  //
+  //   // Back button
+  //   await delay(2000);
+  //   const backBtn = Array.from(document.querySelectorAll('button')).find(btn => btn.innerText.includes("最初の画面に戻る"));
+  //   if (backBtn) {
+  //     backBtn.click();
+  //     console.error("Quay lại màn hình đầu tiên");
+  //   } else {
+  //     console.error("Không tìm thấy nút '最初の画面に戻る'");
+  //     break;
+  //   }
+  // }
+  //
+  // console.log(`Đã hoàn tất ${totalRuns} lần gửi form!`);
 })();

@@ -7,7 +7,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             if (data.autoFillEnabled) {
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
-                    files: ['contentv2.js']
+                    files: ['content.js']
                 });
             }
         });
