@@ -89,6 +89,7 @@ const confirm = async (page) => {
             console.error("Không tìm thấy nút xác nhận");
         }
 };
+
 const submit = async (page) => {
     const submitBtn = await page.$('[data-testid="form-detail--to-completion-button"]');
     if (submitBtn) {
@@ -98,6 +99,41 @@ const submit = async (page) => {
         console.error("Không tìm thấy nút gửi");
     }
 };
+
+function renderWeekdaysWithTimes() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const date = new Date(year, month + 1, 1);
+
+    const results = [];
+    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const timeSlots = ['1:00PM', '10:00AM'];
+
+    while (date.getMonth() === (month + 1) % 12) {
+        const dayOfWeek = date.getDay();
+
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+            const formattedDate = `${date.getFullYear()}/` +
+                `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+                `${date.getDate().toString().padStart(2, '0')}` +
+                `（${weekdays[dayOfWeek]}）`;
+
+            timeSlots.forEach(time => {
+                results.push(`${formattedDate};${time}`);
+            });
+        }
+
+        date.setDate(date.getDate() + 1);
+    }
+
+    return results;
+}
+
+const dayLst = renderWeekdaysWithTimes();
+
+console.log(dayLst);
 
 (async () => {
     const content = await fs.readFile(config.paths.csv, 'utf8');
