@@ -120,7 +120,6 @@ const submit = async (page) => {
 
     for (const { page, row } of pages) {
         console.log(`${row[0]} - ${row[1]} - ${row[2]} - ${row[3]} - ${row[4]}`);
-        await fillInputAutoDetect(page, "157", '2007-02-07');
         //Q1:
         await selectCheckboxByValue(page, '18', '同意する（I agree.）');
         //Q2:
