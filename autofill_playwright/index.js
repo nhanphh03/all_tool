@@ -89,6 +89,15 @@ const confirm = async (page) => {
             console.error("Không tìm thấy nút xác nhận");
         }
 };
+const submit = async (page) => {
+    const submitBtn = await page.$('[data-testid="form-detail--to-completion-button"]');
+    if (submitBtn) {
+        await submitBtn.click();
+        console.log(" Đã nhấn nút gửi (送信)");
+    } else {
+        console.error("Không tìm thấy nút gửi");
+    }
+};
 
 (async () => {
     const content = await fs.readFile(config.paths.csv, 'utf8');
@@ -151,6 +160,7 @@ const confirm = async (page) => {
         // Submit step 1:
         await confirm(page);
         await delay(2500);
+        await submit(page);
 
         // sent no wait
     }
