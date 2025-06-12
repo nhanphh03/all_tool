@@ -1,4 +1,4 @@
-export const uploadFile = async (page, dataItemId, fileName) => {
+export const uploadFile = async (path, config, page, dataItemId, fileName) => {
     const input = await page.$(`input[type="file"][data-item-id="${dataItemId}"]`);
     const filePath = path.resolve(config.paths.assets, fileName);
     await input.setInputFiles(filePath);
@@ -122,35 +122,34 @@ export function renderWeekdaysWithTimesNextMonth() {
 
 export const selectCheckboxByValueDate = async (page, dataItemId, value, checked = true) => {
     const selector = `input[type="checkbox"][data-item-id="${dataItemId}"][value="${value}"]`;
-    console.log(selector)
-    // try {
-    //     await page.waitForSelector(selector, { timeout: 5000 });
-    //     const checkbox = await page.$(selector);
-    //
-    //     if (!checkbox) {
-    //         console.error(`Không tìm thấy checkbox với data-item-id="${dataItemId}" và value="${value}"`);
-    //         return false;
-    //     }
-    //
-    //     const isDisabled = await checkbox.evaluate(el => el.disabled);
-    //     if (isDisabled) {
-    //         console.log(`Checkbox với value="${value}" đã bị disable. Bỏ qua.`);
-    //         return false;
-    //     }
-    //
-    //     const isChecked = await checkbox.isChecked();
-    //     if (isChecked !== checked) {
-    //         await checkbox.click({ force: true });
-    //         console.log(`Đã ${checked ? 'check' : 'uncheck'} checkbox với value="${value}"`);
-    //     } else {
-    //         console.log(`Checkbox với value="${value}" đã ở trạng thái mong muốn.`);
-    //     }
-    //
-    //     return true;
-    // } catch (error) {
-    //     console.error(`Lỗi khi xử lý checkbox value="${value}": ${error.message}`);
-    //     return false;
-    // }
+    try {
+        await page.waitForSelector(selector, { timeout: 5000 });
+        const checkbox = await page.$(selector);
+
+        if (!checkbox) {
+            console.error(`Không tìm thấy checkbox với data-item-id="${dataItemId}" và value="${value}"`);
+            return false;
+        }
+
+        const isDisabled = await checkbox.evaluate(el => el.disabled);
+        if (isDisabled) {
+            console.log(`Checkbox với value="${value}" đã bị disable. Bỏ qua.`);
+            return false;
+        }
+
+        const isChecked = await checkbox.isChecked();
+        if (isChecked !== checked) {
+            await checkbox.click({ force: true });
+            console.log(`Đã ${checked ? 'check' : 'uncheck'} checkbox với value="${value}"`);
+        } else {
+            console.log(`Checkbox với value="${value}" đã ở trạng thái mong muốn.`);
+        }
+
+        return true;
+    } catch (error) {
+        console.error(`Lỗi khi xử lý checkbox value="${value}": ${error.message}`);
+        return false;
+    }
 };
 
 export function renderWeekdaysWithTimesPreviousMonth() {

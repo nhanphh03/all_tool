@@ -1,8 +1,8 @@
 const path = require('path');
 
 module.exports = {
-    // url: 'file:///home/nhanph/Project/Tool/test.html',
-    url: 'https://logoform.jp/form/AwVT/495909',
+    url: 'file:///home/nhanph/Project/Tool/test.html',
+    // url: 'https://logoform.jp/form/AwVT/495909',
     // url: 'https://logoform.jp/form/6fa7/dourokanri',
     browser: {
         headless: false,
