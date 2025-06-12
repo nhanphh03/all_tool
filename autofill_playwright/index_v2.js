@@ -11,19 +11,6 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 const phoneNumber = '07045633348';
 const national = 'ベトナム';
 
-// (async () => {
-//
-//     const dayLst = renderWeekdaysWithTimesPreviousMonth();
-//
-//     for (const value of dayLst) {
-//         const success = await selectCheckboxByValueDate(null, '4', value);
-//         if (success) {
-//             console.log(`Đã chọn thành công checkbox đầu tiên với value="${value}"`);
-//             break;
-//         }
-//     }
-// })();
-
 (async () => {
     const content = await fs.readFile(config.paths.csv, 'utf8');
     const rows = parse(content, { trim: true });
@@ -74,7 +61,7 @@ const national = 'ベトナム';
 
         //Q10:
         for (const value of dayLst) {
-            const success = await selectCheckboxByValueDate(null, '4', value);
+            const success = await selectCheckboxByValueDate(page, '4', value);
             if (success) {
                 console.log(`Đã chọn thành công checkbox đầu tiên với value="${value}"`);
                 break;
@@ -91,21 +78,21 @@ const national = 'ベトナム';
         }
 
         //Q12:
-        await uploadFile(page, '9', row[0]);
+        await uploadFile(path, config, page, '9', row[3]);
 
         //Q13:
-        await uploadFile(page, '10', row[0]);
+        await uploadFile(path, config, page, '10', row[4]);
 
         //Q14:
         await fillInputAutoDetect(page, '15', 'hotrocuocsong.nhatban@gmail.com');
 
         // Submit step 1:
-        await confirm(page);
-
-        await delay(2500);
-
-        // Submit step 2:
-        await submit(page);
+        // await confirm(page);
+        //
+        // await delay(2500);
+        //
+        // // Submit step 2:
+        // await submit(page);
 
     }
     console.log(`Hoàn tất: ${rows.length} dòng đã được gửi`);
