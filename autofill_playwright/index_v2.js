@@ -87,12 +87,12 @@ const national = 'ベトナム';
         await fillInputAutoDetect(page, '15', 'hotrocuocsong.nhatban@gmail.com');
 
         // Submit step 1:
-        // await confirm(page);
-        //
-        // await delay(2500);
-        //
-        // // Submit step 2:
-        // await submit(page);
+        await confirm(page);
+
+        await delay(2500);
+
+        // Submit step 2:
+        await submit(page);
 
     }
     console.log(`Hoàn tất: ${rows.length} dòng đã được gửi`);
