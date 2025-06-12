@@ -203,3 +203,122 @@ console.log(dayLst);
 
     console.log(`Hoàn tất: ${rows.length} dòng đã được gửi`);
 })();
+
+
+
+//--------------------------------------------------
+function renderWeekdaysWithTimesNextMonth() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const date = new Date(year, month + 1, 1);
+
+    const results = [];
+    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const timeSlots = ['1:00PM', '10:00AM'];
+
+    while (date.getMonth() === (month + 1) % 12) {
+        const dayOfWeek = date.getDay();
+
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+            const formattedDate = `${date.getFullYear()}/` +
+                `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+                `${date.getDate().toString().padStart(2, '0')}` +
+                `（${weekdays[dayOfWeek]}）`;
+
+            timeSlots.forEach(time => {
+                results.push(`${formattedDate};${time}`);
+            });
+        }
+
+        date.setDate(date.getDate() + 1);
+    }
+
+    return results;
+}
+
+const selectCheckboxByValue = async (page, dataItemId, value, checked = true) => {
+    const selector = `input[type="checkbox"][data-item-id="${dataItemId}"][value="${value}"]`;
+    console.log(selector)
+    // try {
+    //     await page.waitForSelector(selector, { timeout: 5000 });
+    //     const checkbox = await page.$(selector);
+    //
+    //     if (!checkbox) {
+    //         console.error(`Không tìm thấy checkbox với data-item-id="${dataItemId}" và value="${value}"`);
+    //         return false;
+    //     }
+    //
+    //     const isDisabled = await checkbox.evaluate(el => el.disabled);
+    //     if (isDisabled) {
+    //         console.log(`Checkbox với value="${value}" đã bị disable. Bỏ qua.`);
+    //         return false;
+    //     }
+    //
+    //     const isChecked = await checkbox.isChecked();
+    //     if (isChecked !== checked) {
+    //         await checkbox.click({ force: true });
+    //         console.log(`Đã ${checked ? 'check' : 'uncheck'} checkbox với value="${value}"`);
+    //     } else {
+    //         console.log(`Checkbox với value="${value}" đã ở trạng thái mong muốn.`);
+    //     }
+    //
+    //     return true;
+    // } catch (error) {
+    //     console.error(`Lỗi khi xử lý checkbox value="${value}": ${error.message}`);
+    //     return false;
+    // }
+};
+
+function renderWeekdaysWithTimesPreviousMonth() {
+    const now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth() - 1;
+
+    if (month < 0) {
+        month = 11;
+        year -= 1;
+    }
+
+    const date = new Date(year, month, 1);
+
+    const results = [];
+    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const timeSlots = ['1:00PM', '10:00AM'];
+
+    while (date.getMonth() === month) {
+        const dayOfWeek = date.getDay();
+
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) { // Chỉ lấy thứ 2 - 6
+            const formattedDate = `${date.getFullYear()}/` +
+                `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
+                `${date.getDate().toString().padStart(2, '0')}（${weekdays[dayOfWeek]}）`;
+
+            timeSlots.forEach(time => {
+                results.push(`${formattedDate};${time}`);
+            });
+        }
+
+        date.setDate(date.getDate() + 1);
+    }
+
+    return results;
+}
+
+const dayLst = renderWeekdaysWithTimesPreviousMonth();
+console.log(dayLst);
+
+
+(async () => {
+
+    const dayLst = renderWeekdaysWithTimesPreviousMonth();
+
+    for (const value of dayLst) {
+        const success = await selectCheckboxByValue(null, '4', value);
+        if (success) {
+            console.log(`Đã chọn thành công checkbox đầu tiên với value="${value}"`);
+            break;
+        }
+    }
+})();
