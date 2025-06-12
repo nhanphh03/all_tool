@@ -160,6 +160,7 @@ const submit = async (page) => {
         // Submit step 1:
         await confirm(page);
         await delay(2500);
+        // Submit step 2:
         await submit(page);
 
         // sent no wait
