@@ -32,6 +32,7 @@ const national = 'ベトナム';
     }
 
     for (const { page, row } of pages) {
+        try {
         console.log(`${row[0]} - ${row[1]} - ${row[2]} - ${row[3]} - ${row[4]}`);
         
         //Q1:
@@ -93,6 +94,9 @@ const national = 'ベトナム';
 
         // Submit step 2:
         await submit(page);
+        } catch (err) {
+            console.error(`❌ Lỗi khi xử lý dòng: ${row.join(' - ')}\nChi tiết: ${err.message}`);
+        }
 
     }
     console.log(`Hoàn tất: ${rows.length} dòng đã được gửi`);
