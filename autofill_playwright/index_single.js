@@ -13,8 +13,7 @@ const national = 'ベトナム';
     const start = new Date();
     const content = await fs.readFile(config.paths.csv, 'utf8');
     const rows = parse(content, { trim: true });
-    // const dayLst = renderWeekdaysWithTimesNextMonth(); // mở cmt để chạy tool fill cho tháng sau
-    const dayLst = renderWeekdaysWithTimesPreviousMonth(); // demo thang 5
+    let dayLst = [];
 
     const browser = await chromium.launch({
         headless: config.browser.headless,
@@ -65,6 +64,11 @@ const national = 'ベトナム';
             await selectRadioByValue(page, '22', 'ない(No)');
 
             //Q10:
+            if (dayLst.length === 0) {
+                dayLst = await getAvailableDayList(page);
+                console.log('Danh sách ngày hợp lệ:', dayLst);
+            }
+
             for (let i = 0; i < dayLst.length;) {
                 const value = dayLst[i];
                 const success = await selectCheckboxByValueDate(page, '4', value);
@@ -142,6 +146,14 @@ const national = 'ベトナム';
 //--------------------------------------------------------------------------------------------------
 
 //Functions used in the code above
+
+async function getAvailableDayList(page) {
+    return await page.$$eval(
+        'input[type="checkbox"][data-item-id="4"]:not(:disabled)',
+        inputs => inputs.map(input => input.value)
+    );
+}
+
 const uploadFile = async (path, config, page, dataItemId, fileName) => {
     const input = await page.$(`input[type="file"][data-item-id="${dataItemId}"]`);
     const filePath = path.resolve(config.paths.assets, fileName);
@@ -263,39 +275,6 @@ const isPrintButtonVisible = async (page) => {
     return isVisible;
 };
 
-
-
-function renderWeekdaysWithTimesNextMonth() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
-
-    const date = new Date(year, month + 1, 1);
-
-    const results = [];
-    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    const timeSlots = ['1:00PM', '10:00AM'];
-
-    while (date.getMonth() === (month + 1) % 12) {
-        const dayOfWeek = date.getDay();
-
-        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-            const formattedDate = `${date.getFullYear()}/` +
-                `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
-                `${date.getDate().toString().padStart(2, '0')}` +
-                `（${weekdays[dayOfWeek]}）`;
-
-            timeSlots.forEach(time => {
-                results.push(`${formattedDate};${time}`);
-            });
-        }
-
-        date.setDate(date.getDate() + 1);
-    }
-
-    return results;
-}
-
 const selectCheckboxByValueDate = async (page, dataItemId, value, checked = true) => {
     const selector = `input[type="checkbox"][data-item-id="${dataItemId}"][value="${value}"]`;
     try {
@@ -327,41 +306,3 @@ const selectCheckboxByValueDate = async (page, dataItemId, value, checked = true
         return false;
     }
 };
-
-function renderWeekdaysWithTimesPreviousMonth() {
-    const now = new Date();
-    let year = now.getFullYear();
-    let month = now.getMonth() - 1;
-
-    if (month < 0) {
-        month = 11;
-        year -= 1;
-    }
-
-    const date = new Date(year, month, 1);
-
-    const results = [];
-    const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-    const timeSlots = ['1:00PM', '10:00AM'];
-
-    while (date.getMonth() === month) {
-        const dayOfWeek = date.getDay();
-
-        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-            const formattedDate = `${date.getFullYear()}/` +
-                `${(date.getMonth() + 1).toString().padStart(2, '0')}/` +
-                `${date.getDate().toString().padStart(2, '0')}（${weekdays[dayOfWeek]}）`;
-
-            timeSlots.forEach(time => {
-                results.push(`${formattedDate};${time}`);
-            });
-        }
-
-        date.setDate(date.getDate() + 1);
-    }
-
-    return results;
-}
-
-// 2025-06-13T11:22:10.513Z
-// 2025-06-13T11:22:41.531Z
