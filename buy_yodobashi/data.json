@@ -1,0 +1,29 @@
+{
+  "users": [
+    {
+      "username": "jrevexozip@gmail.com",
+      "password": "Mrngoan0812",
+      "cvv": "221"
+    }
+    ,
+    {
+      "username": "zoerocher836@gmail.com",
+      "password": "Mrngoan0812",
+      "cvv": "221"
+    }
+  ],
+  "linkList": [
+    {
+      "child": "https://www.yodobashi.com/product/100000001003891482/"
+    },
+    {
+      "child": "https://www.yodobashi.com/product/100000001003891484/"
+    }
+  ],
+  "config": {
+    "loginLink" : "https://order.yodobashi.com/yc/login/index.html?returnUrl=https%3A%2F%2Fwww.yodobashi.com%2F%3Flogout%3Dtrue%26yclogout%3Dtrue",
+    "hourRun": 12,
+    "minuteRun": 31,
+    "secondRun": 10
+  }
+}
