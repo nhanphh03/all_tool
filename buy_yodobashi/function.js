@@ -1,10 +1,9 @@
 const delay = ms => new Promise(res => setTimeout(res, ms));
-
 // Hàm tạo context với cấu hình browser
 async function createBrowserContext(browser) {
     return await browser.newContext({
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        viewport: { width: 1920, height: 1080 },
+        viewport: {width: 1920, height: 1080},
         extraHTTPHeaders: {
             'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -29,11 +28,7 @@ async function setupAntiDetection(page) {
         };
 
         const originalQuery = window.navigator.permissions.query;
-        window.navigator.permissions.query = (parameters) => (
-            parameters.name === 'notifications' ?
-                Promise.resolve({ state: Notification.permission }) :
-                originalQuery(parameters)
-        );
+        window.navigator.permissions.query = (parameters) => (parameters.name === 'notifications' ? Promise.resolve({state: Notification.permission}) : originalQuery(parameters));
 
         Object.defineProperty(navigator, 'plugins', {
             get: () => [1, 2, 3, 4, 5].map(() => 'Plugin'),
@@ -50,11 +45,9 @@ async function navigateToPage(page, url, maxRetries = 3) {
     while (retryCount < maxRetries) {
         try {
             await page.goto(url, {
-                waitUntil: 'domcontentloaded',
-                timeout: 60000
+                waitUntil: 'domcontentloaded', timeout: 60000
             });
-            await page.waitForLoadState('networkidle', { timeout: 30000 });
-            console.log(`Successfully opened: ${url}`);
+            await page.waitForLoadState('networkidle', {timeout: 30000});
             return true;
         } catch (error) {
             retryCount++;
@@ -97,8 +90,8 @@ async function loginDirectHome(page, username, password) {
     const passwordDOM = `[id="password"]`;
 
     try {
-        await page.waitForSelector(userNameDOM, { timeout: 10000 });
-        await page.waitForSelector(passwordDOM, { timeout: 2500 });
+        await page.waitForSelector(userNameDOM, {timeout: 10000});
+        await page.waitForSelector(passwordDOM, {timeout: 2500});
 
         // Điền thông tin đăng nhập
         await page.fill(userNameDOM, username);
@@ -109,10 +102,10 @@ async function loginDirectHome(page, username, password) {
         const btnLoginDOM = await page.$('[id="js_i_login0"]');
         if (btnLoginDOM) {
             await btnLoginDOM.click();
-            console.log("✅ Đã nhấn nút đăng nhập");
+            console.log("✅ Đăng nhập thành công !");
 
             // Chờ điều hướng sau khi đăng nhập
-            await page.waitForLoadState('networkidle', { timeout: 30000 });
+            await page.waitForLoadState('networkidle', {timeout: 30000});
             return true;
         } else {
             console.error("Không tìm thấy nút đăng nhập");
@@ -137,10 +130,7 @@ async function configBrowser(links, users, browser, jsonConfig) {
 
             // Tạo object để lưu thông tin user và pages
             const pageChild = {
-                user: user,
-                page: [],
-                context: context,
-                loginSuccess: false
+                user: user, page: [], context: context, loginSuccess: false
             };
 
             try {
@@ -154,14 +144,12 @@ async function configBrowser(links, users, browser, jsonConfig) {
                 if (navigationSuccess) {
                     // Thực hiện đăng nhập
                     console.log(`Thực hiện đăng nhập cho user: ${user.username}`);
-                    // const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
-                    // pageChild.loginSuccess = loginSuccess;
-                    //
-                    // if (loginSuccess) {
-                        // Tạo các trang con cho links
-                        const pagesChildren = await createChildPages(context, links);
-                        pageChild.page = pagesChildren;
-                    // }
+                    const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
+                    pageChild.loginSuccess = loginSuccess;
+
+                    if (loginSuccess) {
+                        pageChild.page = await createChildPages(context, links);
+                    }
                 }
 
                 pagesMain.push(pageChild);
@@ -173,8 +161,7 @@ async function configBrowser(links, users, browser, jsonConfig) {
             }
         }
 
-    }
-    catch (error) {
+    } catch (error) {
         console.error(`Failed to configure browser:`, error.message);
         throw error; // Re-throw để main function xử lý
     }
@@ -211,48 +198,60 @@ function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
         }, timeUntilTarget);
     });
 }
-const addProductToCard = async (quantity = 1, page) =>{
+const addProductToCard = async (page) => {
+    try {
+        await page.waitForSelector('#js_m_submitRelated', { state: 'visible', timeout: 5000 });
 
-    //todo change quantity product
-    const addToCartBtn = await page.$('#js_m_submitRelated');
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+            page.click('#js_m_submitRelated')
+        ]);
 
-    if (addToCartBtn) {
-        await addToCartBtn.click();
+        console.log("✅ Đã nhấn nút 'Thêm vào giỏ hàng' và chuyển sang trang mới");
 
-        console.log("✅ Đã nhấn nút 'Thêm vào giỏ hàng'");
-        await page.waitForTimeout(1000);
-    } else {
-        console.error("Không tìm thấy nút 'Thêm vào giỏ hàng'");
+        console.log("🌐 URL hiện tại:", page.url());
+    } catch (error) {
+        console.error("❌ Lỗi khi thêm vào giỏ hàng:", error);
     }
-}
-const proceedToCheckoutStep1 = async ( page ) =>{
-    const checkoutBtn = await page.$('a[href="/yc/shoppingcart/index.html?next=true"]');
-    if (checkoutBtn) {
-        await checkoutBtn.click();
-        console.log("✅ Đã nhấn nút 'Tiến hành thanh toán'");
+};
+const proceedToCheckoutStep1 = async (page) => {
+    try {
+        const selector = 'a[href="/yc/shoppingcart/index.html?next=true"]';
+        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
 
-        // Chờ xử lý
-        await page.waitForTimeout(5000);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+            page.click(selector)
+        ]);
+
+        console.log("✅ Đã nhấn nút 'Tiến hành thanh toán' (Step 1)");
+        console.log("🌐 URL hiện tại:", page.url());
         return true;
 
-    } else {
-        console.error("❌ Không tìm thấy nút 'Tiến hành thanh toán'");
+    } catch (error) {
+        console.error("❌ Không tìm thấy hoặc không thể click 'Tiến hành thanh toán' (Step 1):", error.message);
+        return false;
     }
-}
-const proceedToCheckoutStep2 = async ( page ) =>{
-    const nextBtn = await page.$('#sc_i_buy');
-    if (nextBtn) {
-        await nextBtn.click();
-        console.log("✅ Đã  nhấn nút 'Kế tiếp'");
+};
+const proceedToCheckoutStep2 = async (page) => {
+    try {
+        const selector = '#sc_i_buy';
+        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
 
-        // Chờ xử lý
-        await page.waitForTimeout(5000);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+            page.click(selector)
+        ]);
+
+        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2)");
+        console.log("🌐 URL hiện tại:", page.url());
         return true;
 
-    } else {
-        console.error("❌ Không tìm thấy nút 'Tiến hành thanh toán'");
+    } catch (error) {
+        console.error("❌ Không tìm thấy hoặc không thể click 'Kế tiếp' (Step 2):", error.message);
+        return false;
     }
-}
+};
 const enterSecurityCode = async (page, cvvCode) => {
     try {
         const cvvInput = await page.$('input[name="creditCard.securityCode"]');
@@ -268,7 +267,7 @@ const enterSecurityCode = async (page, cvvCode) => {
             } else {
                 console.log(`⚠️ CVV không khớp. Expected: ${cvvCode}, Got: ${inputValue}`);
                 await cvvInput.fill('');
-                await cvvInput.type(cvvCode.toString(), { delay: 100 });
+                await cvvInput.type(cvvCode.toString(), {delay: 100});
                 console.log("🔄 Đã thử nhập CVV lại");
             }
 
@@ -293,27 +292,26 @@ const placeOrder = async (page) => {
         ];
 
         for (const selector of selectors) {
-            const btn = await page.$(selector);
-            if (btn && await btn.isVisible()) {
-                await btn.click();
+            if (await page.$(selector)) {
+                await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
+                await Promise.all([
+                    page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+                    page.click(selector)
+                ]);
+
                 console.log("✅ Đã nhấn nút 'Đặt hàng của bạn'");
-
-                // Chờ xử lý
-                await page.waitForTimeout(5000);
                 console.log(`📍 Order completed. URL: ${page.url()}`);
-
                 return true;
             }
         }
-
         console.error("❌ Không tìm thấy nút đặt hàng");
         return false;
 
     } catch (error) {
-        console.error("❌ Lỗi:", error.message);
+        console.error("❌ Lỗi khi đặt hàng:", error.message);
         return false;
     }
-}
+};
 const reloadAllPages = async (pages) => {
     pages.forEach((page) => {
         page.reload();
@@ -321,13 +319,16 @@ const reloadAllPages = async (pages) => {
 }
 const proceedWith3DSecure = async (page) => {
     try {
-        const secureBtn = await page.$('#threedsecureExplain_Ok');
-        if (secureBtn) {
-            await secureBtn.click();
-            console.log("✅ Đã nhấn nút 3D Secure");
+        const selector = '#threedsecureExplain_Ok';
+        if (await page.$(selector)) {
+            await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
 
-            // Chờ xử lý
-            await page.waitForTimeout(5000);
+            await Promise.all([
+                page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+                page.click(selector)
+            ]);
+
+            console.log("✅ Đã nhấn nút 3D Secure");
             console.log(`📍 3D Secure processed. URL: ${page.url()}`);
             return true;
         } else {
@@ -338,7 +339,7 @@ const proceedWith3DSecure = async (page) => {
         console.error("❌ Lỗi khi xử lý 3D Secure:", error.message);
         return false;
     }
-}
+};
 
 module.exports = {
     configBrowser,
