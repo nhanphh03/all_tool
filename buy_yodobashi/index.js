@@ -45,16 +45,19 @@ const {
         const pagesMain = await configBrowser(links, users, browser, jsonConfig);
 
         console.log('⏳ Bắt đầu hẹn giờ chạy chương trình');
+        console.log("\n")
 
         await (async () => {
             await waitUntilTime(jsonConfig.hourRun, jsonConfig.minuteRun, jsonConfig.secondRun);
             console.log("Chạy code sau khi đủ giờ");
+            console.log("\n")
         })();
 
         const startBuy = new Date();
 
         for (const browser of pagesMain) {
             console.log("⏳ Bắt đầu mua hàng lúc ", startBuy.toLocaleTimeString('vi-VN'));
+            console.log("\n")
             await reloadAllPages(browser.page);
             const cvv = browser.user.cvv;
             console.log(cvv)
@@ -70,11 +73,13 @@ const {
                 await placeOrder( page );
                 await delay(1000);
                 console.log("Đặt thành công đơn hàng !")
+                console.log("\n")
                 // await proceedWith3DSecure( page );
             }
         }
 
         console.log(`⏳ Tổng thời gian từ lúc bắt đầu mở tool: ${new Date().getTime() - start.getTime()}ms`);
+        console.log("\n")
         console.log(`⏳ Tổng thời gian từ lúc bắt đầu mua hàng: ${new Date().getTime() - startBuy.getTime()}ms`);
 
     } catch (error) {

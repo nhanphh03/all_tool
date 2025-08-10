@@ -52,9 +52,11 @@ async function navigateToPage(page, url, maxRetries = 3) {
         } catch (error) {
             retryCount++;
             console.log(`Retry ${retryCount}/${maxRetries} for ${url}`);
+            console.log("\n")
 
             if (retryCount >= maxRetries) {
                 console.error(`Failed to open ${url} after ${maxRetries} retries:`, error.message);
+                console.log("\n")
                 return false;
             }
             await delay(2000);
@@ -74,11 +76,13 @@ async function createChildPages(context, links) {
             // Không cần await ở đây nếu muốn load song song
             page.goto(item.child).catch(err => {
                 console.error(`Failed to navigate to ${item.child}:`, err.message);
+                console.log("\n")
             });
 
             pagesChildren.push(page);
         } catch (error) {
             console.error(`Failed to create page for ${item.child}:`, error.message);
+            console.log("\n")
         }
     }
 
@@ -97,23 +101,27 @@ async function loginDirectHome(page, username, password) {
         await page.fill(userNameDOM, username);
         await page.fill(passwordDOM, password);
         console.log(`✅ Đã nhập username và password cho: ${username}`);
+        console.log("\n")
 
         // Tìm và click nút đăng nhập
         const btnLoginDOM = await page.$('[id="js_i_login0"]');
         if (btnLoginDOM) {
             await btnLoginDOM.click();
             console.log("✅ Đăng nhập thành công !");
+            console.log("\n")
 
             // Chờ điều hướng sau khi đăng nhập
             await page.waitForLoadState('networkidle', {timeout: 30000});
             return true;
         } else {
             console.error("Không tìm thấy nút đăng nhập");
+            console.log("\n")
             return false;
         }
 
     } catch (error) {
         console.error(`Lỗi khi đăng nhập cho ${username}:`, error.message);
+        console.log("\n")
         return false;
     }
 }
@@ -124,6 +132,7 @@ async function configBrowser(links, users, browser, jsonConfig) {
     try {
         for (const user of users) {
             console.log(`Tiến hành mua hàng cho user: ${user.username}`);
+            console.log("\n")
 
             // Tạo context cho user
             const context = await createBrowserContext(browser);
@@ -144,6 +153,7 @@ async function configBrowser(links, users, browser, jsonConfig) {
                 if (navigationSuccess) {
                     // Thực hiện đăng nhập
                     console.log(`Thực hiện đăng nhập cho user: ${user.username}`);
+                    console.log("\n")
                     const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
                     pageChild.loginSuccess = loginSuccess;
 
@@ -156,6 +166,7 @@ async function configBrowser(links, users, browser, jsonConfig) {
 
             } catch (userError) {
                 console.error(`Error processing user ${user.username}:`, userError.message);
+                console.log("\n")
                 // Vẫn push pageChild để theo dõi user nào bị lỗi
                 pagesMain.push(pageChild);
             }
@@ -163,6 +174,7 @@ async function configBrowser(links, users, browser, jsonConfig) {
 
     } catch (error) {
         console.error(`Failed to configure browser:`, error.message);
+        console.log("\n")
         throw error; // Re-throw để main function xử lý
     }
 
@@ -190,10 +202,12 @@ function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
         // console.log(`Giờ hẹn chạy: ${target.toLocaleTimeString('ja-JP')}`);
 
         console.log(`⏳ Sẽ chạy sau ${Math.floor(timeUntilTarget / 1000)} giây...`);
+        console.log("\n")
 
         // Chỉ cần setTimeout một lần là đủ
         setTimeout(() => {
             console.log(`✅ Đến giờ hẹn: ${new Date().toLocaleTimeString('vi-VN')}`);
+            console.log("\n")
             resolve();
         }, timeUntilTarget);
     });
@@ -208,8 +222,10 @@ const addProductToCard = async (page) => {
         ]);
 
         console.log("✅ Đã nhấn nút 'Thêm vào giỏ hàng' và chuyển sang trang mới");
+        console.log("\n")
 
         console.log("🌐 URL hiện tại:", page.url());
+        console.log("\n")
     } catch (error) {
         console.error("❌ Lỗi khi thêm vào giỏ hàng:", error);
     }
@@ -225,11 +241,14 @@ const proceedToCheckoutStep1 = async (page) => {
         ]);
 
         console.log("✅ Đã nhấn nút 'Tiến hành thanh toán' (Step 1)");
+        console.log("\n")
         console.log("🌐 URL hiện tại:", page.url());
+        console.log("\n")
         return true;
 
     } catch (error) {
         console.error("❌ Không tìm thấy hoặc không thể click 'Tiến hành thanh toán' (Step 1):", error.message);
+        console.log("\n")
         return false;
     }
 };
@@ -244,11 +263,14 @@ const proceedToCheckoutStep2 = async (page) => {
         ]);
 
         console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2)");
+        console.log("\n")
         console.log("🌐 URL hiện tại:", page.url());
+        console.log("\n")
         return true;
 
     } catch (error) {
         console.error("❌ Không tìm thấy hoặc không thể click 'Kế tiếp' (Step 2):", error.message);
+        console.log("\n")
         return false;
     }
 };
@@ -264,11 +286,14 @@ const enterSecurityCode = async (page, cvvCode) => {
             const inputValue = await cvvInput.inputValue();
             if (inputValue === cvvCode.toString()) {
                 console.log("✅ CVV đã được nhập chính xác");
+                console.log("\n")
             } else {
                 console.log(`⚠️ CVV không khớp. Expected: ${cvvCode}, Got: ${inputValue}`);
+                console.log("\n")
                 await cvvInput.fill('');
                 await cvvInput.type(cvvCode.toString(), {delay: 100});
                 console.log("🔄 Đã thử nhập CVV lại");
+                console.log("\n")
             }
 
         } else {
@@ -300,15 +325,18 @@ const placeOrder = async (page) => {
                 ]);
 
                 console.log("✅ Đã nhấn nút 'Đặt hàng của bạn'");
+                console.log("\n")
                 console.log(`📍 Order completed. URL: ${page.url()}`);
                 return true;
             }
         }
         console.error("❌ Không tìm thấy nút đặt hàng");
+        console.log("\n")
         return false;
 
     } catch (error) {
         console.error("❌ Lỗi khi đặt hàng:", error.message);
+        console.log("\n")
         return false;
     }
 };
@@ -329,14 +357,17 @@ const proceedWith3DSecure = async (page) => {
             ]);
 
             console.log("✅ Đã nhấn nút 3D Secure");
+            console.log("\n")
             console.log(`📍 3D Secure processed. URL: ${page.url()}`);
             return true;
         } else {
             console.error("❌ Không tìm thấy nút 3D Secure");
+            console.log("\n")
             return false;
         }
     } catch (error) {
         console.error("❌ Lỗi khi xử lý 3D Secure:", error.message);
+        console.log("\n")
         return false;
     }
 };
