@@ -1,7 +1,8 @@
 const fs = require('fs-extra');
 const {chromium} = require('playwright');
 const config = require('./config');
-const {configBrowser,
+const {
+    configBrowser,
     waitUntilTime,
     delay,
     reloadAllPages,
@@ -9,7 +10,6 @@ const {configBrowser,
     proceedToCheckoutStep1,
     proceedToCheckoutStep2,
     placeOrder,
-    proceedWith3DSecure,
     enterSecurityCode
 } = require("./function");
 
@@ -23,7 +23,7 @@ const {configBrowser,
         const links = jsonData.linkList || [];
         const jsonConfig = jsonData.config || {};
 
-        console.log('Data loaded:', { usersCount: users.length, linksCount: links.length});
+        console.log('Data loaded:', {usersCount: users.length, linksCount: links.length});
 
         const browser = await chromium.launch({
             headless: false,
@@ -53,21 +53,27 @@ const {configBrowser,
 
         const startBuy = new Date();
 
-        for(const browser of pagesMain) {
+        for (const browser of pagesMain) {
             console.log("⏳ Bắt đầu mua hàng lúc ", startBuy.toLocaleTimeString('vi-VN'));
-            console.log(browser.page)
             await reloadAllPages(browser.page);
-            for (const page of browser.page){
-                // await addProductToCard(1, page);
-                // await proceedToCheckoutStep1( page);
-                // await proceedToCheckoutStep2( page);
-                // await enterSecurityCode( page, 222 );
-                // await placeOrder( page );
+            const cvv = browser.user.cvv;
+            console.log(cvv)
+            for (const page of browser.page) {
+                await addProductToCard( page );
+                await delay(1000);
+                await proceedToCheckoutStep1( page );
+                await delay(1000);
+                await proceedToCheckoutStep2( page );
+                await delay(1000);
+                await enterSecurityCode( page, cvv );
+                await delay(1000);
+                await placeOrder( page );
+                await delay(1000);
+                console.log("Đặt thành công đơn hàng !")
                 // await proceedWith3DSecure( page );
             }
         }
 
-        // console.log(`Successfully processed: ${pagesMain.filter(p => p.loginSuccess).length}/${pagesMain.length} users`);
         console.log(`⏳ Tổng thời gian từ lúc bắt đầu mở tool: ${new Date().getTime() - start.getTime()}ms`);
         console.log(`⏳ Tổng thời gian từ lúc bắt đầu mua hàng: ${new Date().getTime() - startBuy.getTime()}ms`);
 
