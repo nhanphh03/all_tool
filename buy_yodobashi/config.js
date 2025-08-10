@@ -1,15 +1,14 @@
 const path = require('path');
 
 module.exports = {
-    url: 'https://logoform.jp/form/9cfD/598244',
+    url: 'https://order.yodobashi.com/yc/login/index.html',
     browser: {
         headless: false,
         slowMo: 100,
         timeout: 5000
     },
     paths: {
-        csv: path.join(__dirname, 'data', 'data.csv'),
-        assets: path.join(__dirname, 'assets')
+        json: path.join(__dirname, 'data.json')
     },
     delays: {
         afterNavigation: 2000,
