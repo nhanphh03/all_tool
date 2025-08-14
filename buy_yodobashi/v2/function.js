@@ -1,22 +1,40 @@
 const delay = ms => new Promise(res => setTimeout(res, ms));
-// Hàm tạo context với cấu hình browser
+
 async function createBrowserContext(browser) {
-    return await browser.newContext({
+    const context = await browser.newContext({
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        viewport: {width: 1920, height: 1080},
+        viewport: { width: 1920, height: 1080 },
+        locale: 'en-US',
+        timezoneId: 'America/New_York',
+
         extraHTTPHeaders: {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Cache-Control': 'max-age=0',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'none',
             'Sec-Fetch-User': '?1',
-            'Upgrade-Insecure-Requests': '1'
-        }
+            'Cache-Control': 'max-age=0',
+            'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"'
+        },
+
+        permissions: ['geolocation', 'notifications'],
+
+        screen: { width: 1920, height: 1080 },
+        deviceScaleFactor: 1,
+        isMobile: false,
+        hasTouch: false
     });
+
+    return context;
 }
-// Hàm thiết lập anti-detection cho page
+
 async function setupAntiDetection(page) {
     await page.addInitScript(() => {
         Object.defineProperty(navigator, 'webdriver', {
@@ -24,42 +42,130 @@ async function setupAntiDetection(page) {
         });
 
         window.chrome = {
-            runtime: {}
+            runtime: {},
+            app: {}
         };
 
         const originalQuery = window.navigator.permissions.query;
-        window.navigator.permissions.query = (parameters) => (parameters.name === 'notifications' ? Promise.resolve({state: Notification.permission}) : originalQuery(parameters));
+        window.navigator.permissions.query = (parameters) => (
+            parameters.name === 'notifications' ?
+                Promise.resolve({ state: Notification.permission }) :
+                originalQuery(parameters)
+        );
 
         Object.defineProperty(navigator, 'plugins', {
-            get: () => [1, 2, 3, 4, 5].map(() => 'Plugin'),
+            get: () => [
+                {
+                    0: {type: "application/x-google-chrome-pdf", suffixes: "pdf", description: "Portable Document Format", enabledPlugin: Plugin},
+                    description: "Portable Document Format",
+                    filename: "internal-pdf-viewer",
+                    length: 1,
+                    name: "Chrome PDF Plugin"
+                },
+                {
+                    0: {type: "application/pdf", suffixes: "pdf", description: "", enabledPlugin: Plugin},
+                    description: "",
+                    filename: "mhjfbmdgcfjbbpaeojofohoefgiehjai",
+                    length: 1,
+                    name: "Chrome PDF Viewer"
+                },
+                {
+                    0: {type: "application/x-nacl", suffixes: "", description: "Native Client Executable", enabledPlugin: Plugin},
+                    1: {type: "application/x-pnacl", suffixes: "", description: "Portable Native Client Executable", enabledPlugin: Plugin},
+                    description: "",
+                    filename: "internal-nacl-plugin",
+                    length: 2,
+                    name: "Native Client"
+                }
+            ],
         });
+
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['en-US', 'en', 'vi'],
+        });
+
+        Object.defineProperty(navigator, 'platform', {
+            get: () => 'Win32',
+        });
+
+        Object.defineProperty(navigator, 'hardwareConcurrency', {
+            get: () => 8,
+        });
+
+        Object.defineProperty(navigator, 'deviceMemory', {
+            get: () => 8,
+        });
+
+        Object.defineProperty(navigator, 'connection', {
+            get: () => ({
+                effectiveType: '4g',
+                rtt: 100,
+                downlink: 2.0
+            }),
+        });
+
+        ['mousedown', 'mouseup', 'mousemove', 'keydown', 'keyup'].forEach(eventType => {
+            document.addEventListener(eventType, () => {
+                window.lastActivity = Date.now();
+            });
+        });
+
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+    });
+
+    await page.setViewportSize({
+        width: 1920 + Math.floor(Math.random() * 100),
+        height: 1080 + Math.floor(Math.random() * 100)
     });
 
     page.setDefaultTimeout(60000);
     page.setDefaultNavigationTimeout(60000);
 }
-// Hàm điều hướng đến trang với retry logic
+
 async function navigateToPage(page, url, maxRetries = 3) {
     let retryCount = 0;
 
     while (retryCount < maxRetries) {
         try {
+            await delay(1000 + Math.random() * 2000);
+
             await page.goto(url, {
-                waitUntil: 'domcontentloaded', timeout: 60000
+                waitUntil: 'domcontentloaded',
+                timeout: 60000
             });
-            await page.waitForLoadState('networkidle', {timeout: 30000});
+
+            await page.mouse.move(
+                Math.random() * 1920,
+                Math.random() * 1080
+            );
+
+            await page.waitForLoadState('networkidle', { timeout: 30000 });
+
+            await page.evaluate(() => {
+                window.scrollTo(0, Math.random() * 200);
+            });
+
+            await delay(500 + Math.random() * 1000);
+
             return true;
         } catch (error) {
             retryCount++;
             console.log(`Retry ${retryCount}/${maxRetries} for ${url}`);
-            console.log("\n")
+            console.log("Error:", error.message, "\n");
 
             if (retryCount >= maxRetries) {
                 console.error(`Failed to open ${url} after ${maxRetries} retries:`, error.message);
-                console.log("\n")
                 return false;
             }
-            await delay(2000);
+
+            // Exponential backoff với random jitter
+            const baseDelay = Math.pow(2, retryCount) * 1000;
+            const jitter = Math.random() * 1000;
+            await delay(baseDelay + jitter);
         }
     }
     return false;
@@ -72,6 +178,7 @@ async function gotoPageCard(page, url) {
     await page.waitForLoadState('networkidle', { timeout: 30000 });
     return page;
 }
+
 async function createChildPages(context, links) {
     const pagesChildren = [];
 
@@ -96,6 +203,7 @@ async function createChildPages(context, links) {
     }
     return pagesChildren;
 }
+
 async function loginDirectHome(page, username, password) {
     const userNameDOM = `[id="memberId"]`;
     const passwordDOM = `[id="password"]`;
@@ -125,15 +233,24 @@ async function loginDirectHome(page, username, password) {
         return false;
     }
 }
+
 async function configBrowser(links, users, browser, jsonConfig) {
     const pagesMain = [];
 
     try {
         for (const user of users) {
             console.log(`Tiến hành mua hàng cho user: ${user.username}`, "\n");
+
+            // Delay giữa các user
+            await delay(2000 + Math.random() * 3000);
+
             const context = await createBrowserContext(browser);
             const pageChild = {
-                user: user, page: [], context: context, loginSuccess: false, pageCart: null
+                user: user,
+                page: [],
+                context: context,
+                loginSuccess: false,
+                pageCart: null
             };
 
             try {
@@ -155,16 +272,17 @@ async function configBrowser(links, users, browser, jsonConfig) {
                 }
 
                 pagesMain.push(pageChild);
+
             } catch (userError) {
                 console.error(`Error processing user ${user.username}:`, userError.message, "\n");
-                console.log("")
+                console.log("");
                 pagesMain.push(pageChild);
             }
         }
 
     } catch (error) {
         console.error(`Failed to configure browser:`, error.message);
-        console.log("\n")
+        console.log("\n");
         throw error; // Re-throw để main function xử lý
     }
 
