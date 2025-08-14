@@ -64,7 +64,14 @@ async function navigateToPage(page, url, maxRetries = 3) {
     }
     return false;
 }
-// Hàm tạo các trang con cho links
+
+async function gotoPageCard(page, url) {
+    await page.goto(url, {
+        waitUntil: 'domcontentloaded', timeout: 60000
+    });
+    await page.waitForLoadState('networkidle', { timeout: 30000 });
+    return page;
+}
 async function createChildPages(context, links) {
     const pagesChildren = [];
 
@@ -73,22 +80,22 @@ async function createChildPages(context, links) {
             const page = await context.newPage();
             await setupAntiDetection(page);
 
-            // Không cần await ở đây nếu muốn load song song
             page.goto(item.child).catch(err => {
-                console.error(`Failed to navigate to ${item.child}:`, err.message);
-                console.log("\n")
+                console.error(`Failed to navigate to ${item.child}:`, err.message, " \n");
             });
 
-            pagesChildren.push(page);
+            pagesChildren.push(
+                {
+                    page: page,
+                    quantity: item.quantity
+                }
+            );
         } catch (error) {
-            console.error(`Failed to create page for ${item.child}:`, error.message);
-            console.log("\n")
+            console.error(`Failed to create page for ${item.child}:`, error.message, " \n");
         }
     }
-
     return pagesChildren;
 }
-// Hàm đăng nhập
 async function loginDirectHome(page, username, password) {
     const userNameDOM = `[id="memberId"]`;
     const passwordDOM = `[id="password"]`;
@@ -97,77 +104,60 @@ async function loginDirectHome(page, username, password) {
         await page.waitForSelector(userNameDOM, {timeout: 10000});
         await page.waitForSelector(passwordDOM, {timeout: 2500});
 
-        // Điền thông tin đăng nhập
         await page.fill(userNameDOM, username);
         await page.fill(passwordDOM, password);
-        console.log(`✅ Đã nhập username và password cho: ${username}`);
-        console.log("\n")
+        console.log(`✅ Đã nhập username và password cho: ${username}`, "\n");
 
-        // Tìm và click nút đăng nhập
         const btnLoginDOM = await page.$('[id="js_i_login0"]');
         if (btnLoginDOM) {
             await btnLoginDOM.click();
-            console.log("✅ Đăng nhập thành công !");
-            console.log("\n")
+            console.log("✅ Đăng nhập thành công !", "\n");
 
-            // Chờ điều hướng sau khi đăng nhập
             await page.waitForLoadState('networkidle', {timeout: 30000});
             return true;
         } else {
-            console.error("Không tìm thấy nút đăng nhập");
-            console.log("\n")
+            console.error("Không tìm thấy nút đăng nhập\n");
             return false;
         }
 
     } catch (error) {
         console.error(`Lỗi khi đăng nhập cho ${username}:`, error.message);
-        console.log("\n")
         return false;
     }
 }
-// Hàm chính để cấu hình browser và tạo pages
 async function configBrowser(links, users, browser, jsonConfig) {
     const pagesMain = [];
 
     try {
         for (const user of users) {
-            console.log(`Tiến hành mua hàng cho user: ${user.username}`);
-            console.log("\n")
-
-            // Tạo context cho user
+            console.log(`Tiến hành mua hàng cho user: ${user.username}`, "\n");
             const context = await createBrowserContext(browser);
-
-            // Tạo object để lưu thông tin user và pages
             const pageChild = {
-                user: user, page: [], context: context, loginSuccess: false
+                user: user, page: [], context: context, loginSuccess: false, pageCart: null
             };
 
             try {
-                // Tạo trang home
                 const pageHome = await context.newPage();
                 await setupAntiDetection(pageHome);
 
-                // Điều hướng đến trang login
-                const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
+                const pageCart = await context.newPage();
+                await setupAntiDetection(pageCart);
 
+                const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
                 if (navigationSuccess) {
-                    // Thực hiện đăng nhập
-                    console.log(`Thực hiện đăng nhập cho user: ${user.username}`);
-                    console.log("\n")
+                    console.log(`Thực hiện đăng nhập cho user: ${user.username}`, "\n");
                     const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
                     pageChild.loginSuccess = loginSuccess;
-
                     if (loginSuccess) {
                         pageChild.page = await createChildPages(context, links);
+                        pageChild.pageCart = await gotoPageCard(pageCart, jsonConfig.cardLink);
                     }
                 }
 
                 pagesMain.push(pageChild);
-
             } catch (userError) {
-                console.error(`Error processing user ${user.username}:`, userError.message);
-                console.log("\n")
-                // Vẫn push pageChild để theo dõi user nào bị lỗi
+                console.error(`Error processing user ${user.username}:`, userError.message, "\n");
+                console.log("")
                 pagesMain.push(pageChild);
             }
         }
@@ -212,24 +202,29 @@ function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
         }, timeUntilTarget);
     });
 }
-const addProductToCard = async (page) => {
+const addProductToCard = async (page, quantity) => {
     try {
+        await page.waitForSelector('#qtySel', { state: 'visible', timeout: 5000 });
+
+        await page.selectOption('#qtySel', String(quantity));
+        await page.evaluate((qty) => {
+            document.querySelector('#qtyText').value = qty;
+            document.querySelector('#qtyTextNew').value = qty;
+        }, quantity);
+
+        console.log(`✅ Đã chọn số lượng: ${quantity}`);
+
         await page.waitForSelector('#js_m_submitRelated', { state: 'visible', timeout: 5000 });
+        await page.click('#js_m_submitRelated');
 
-        await Promise.all([
-            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
-            page.click('#js_m_submitRelated')
-        ]);
+        console.log("✅ Đã thêm ", quantity, " sản phẩm vào giỏ hàng");
 
-        console.log("✅ Đã nhấn nút 'Thêm vào giỏ hàng' và chuyển sang trang mới");
-        console.log("\n")
-
-        console.log("🌐 URL hiện tại:", page.url());
-        console.log("\n")
     } catch (error) {
         console.error("❌ Lỗi khi thêm vào giỏ hàng:", error);
     }
 };
+
+
 const proceedToCheckoutStep1 = async (page) => {
     try {
         const selector = 'a[href="/yc/shoppingcart/index.html?next=true"]';
@@ -334,6 +329,7 @@ const placeOrder = async (page) => {
     }
 };
 const reloadAllPages = async (pages) => {
+    console.log("Thực hiện reload tất cả các trang\n")
     pages.forEach((page) => {
         page.reload();
     })
