@@ -5,27 +5,22 @@
       "password": "Mrngoan0812",
       "cvv": "982"
     }
-    ,{
-      "username": "jrevexozip@gmail.com",
-      "password": "Mrngoan0812",
-      "cvv": "982"
-    }
   ],
   "linkList": [
     {
-      "child": "https://www.yodobashi.com/product/100000001003891482/",
-      "quantity": 3
+      "child": "https://www.yodobashi.com/product/100000001002973989/",
+      "quantity": 4
     },
     {
-      "child": "https://www.yodobashi.com/product/100000001003891482/",
-      "quantity": 3
+      "child": "https://www.yodobashi.com/product/100000001002973154/",
+      "quantity": 4
     }
   ],
   "config": {
     "loginLink" : "https://order.yodobashi.com/yc/login/index.html?returnUrl=https%3A%2F%2Fwww.yodobashi.com%2F%3Flogout%3Dtrue%26yclogout%3Dtrue",
     "cardLink" : "https://order.yodobashi.com/yc/shoppingcart/index.html",
-    "hourRun": 7,
-    "minuteRun": 30,
-    "secondRun": 1
+    "hourRun": 22,
+    "minuteRun": 43,
+    "secondRun": 35
   }
 }
