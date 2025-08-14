@@ -44,6 +44,7 @@ const {
 
         // Sử dụng hàm đã tách
         const pagesMain = await configBrowser(links, users, browser, jsonConfig);
+        console.log(pagesMain)
 
         console.log('⏳ Bắt đầu hẹn giờ chạy chương trình \n');
 
@@ -61,7 +62,6 @@ const {
         );
         await reloadAllPages(allPages);
 
-        console.log(pagesMain)
 
         for (const browser of pagesMain) {
             console.log("-------------------------------------------------------------------------")
