@@ -258,19 +258,16 @@ const proceedToCheckoutStep2 = async (page) => {
         await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
 
         await Promise.all([
-            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 50000 }),
             page.click(selector)
         ]);
 
-        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2)");
-        console.log("\n")
-        console.log("🌐 URL hiện tại:", page.url());
-        console.log("\n")
+        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2) \n");
+        console.log("🌐 URL hiện tại: ", page.url(), "\n");
         return true;
 
     } catch (error) {
-        console.error("❌ Không tìm thấy hoặc không thể click 'Kế tiếp' (Step 2):", error.message);
-        console.log("\n")
+        console.error("❌ Không tìm thấy hoặc không thể click 'Kế tiếp' (Step 2):", error.message, "\n");
         return false;
     }
 };
@@ -285,17 +282,13 @@ const enterSecurityCode = async (page, cvvCode) => {
 
             const inputValue = await cvvInput.inputValue();
             if (inputValue === cvvCode.toString()) {
-                console.log("✅ CVV đã được nhập chính xác");
-                console.log("\n")
+                console.log("✅ CVV đã được nhập chính xác\n");
             } else {
-                console.log(`⚠️ CVV không khớp. Expected: ${cvvCode}, Got: ${inputValue}`);
-                console.log("\n")
+                console.log(`⚠️ CVV không khớp. Expected: ${cvvCode}, Got: ${inputValue}\n`);
                 await cvvInput.fill('');
                 await cvvInput.type(cvvCode.toString(), {delay: 100});
-                console.log("🔄 Đã thử nhập CVV lại");
-                console.log("\n")
+                console.log("🔄 Đã thử nhập CVV lại\n");
             }
-
         } else {
             console.log("✅ CVV validation passed");
         }
@@ -318,9 +311,9 @@ const placeOrder = async (page) => {
 
         for (const selector of selectors) {
             if (await page.$(selector)) {
-                await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
+                await page.waitForSelector(selector, { state: 'visible', timeout: 50000 });
                 await Promise.all([
-                    page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+                    page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
                     page.click(selector)
                 ]);
 
@@ -356,18 +349,15 @@ const proceedWith3DSecure = async (page) => {
                 page.click(selector)
             ]);
 
-            console.log("✅ Đã nhấn nút 3D Secure");
-            console.log("\n")
+            console.log("✅ Đã nhấn nút 3D Secure\n");
             console.log(`📍 3D Secure processed. URL: ${page.url()}`);
             return true;
         } else {
             console.error("❌ Không tìm thấy nút 3D Secure");
-            console.log("\n")
             return false;
         }
     } catch (error) {
         console.error("❌ Lỗi khi xử lý 3D Secure:", error.message);
-        console.log("\n")
         return false;
     }
 };

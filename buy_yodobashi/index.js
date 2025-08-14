@@ -87,3 +87,5 @@ const {
         console.error('Stack trace:', error.stack);
     }
 })();
+
+//note 14: nhap xong so cvv khong tu dong bam dat hang
