@@ -1,9 +1,54 @@
+const config = require("./config");
+const { chromium } = require('playwright');
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+async function createStealthBrowser() {
+
+    return await chromium.launch({
+        headless: false,
+        slowMo: config.browser.slowMo,
+        args: [
+            '--disable-blink-features=AutomationControlled',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-automation',
+            '--exclude-switches=enable-automation',
+            '--disable-dev-shm-usage',
+            '--disable-extensions',
+            '--disable-default-apps',
+            '--disable-sync',
+            '--disable-translate',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            '--disable-features=TranslateUI',
+            '--disable-ipc-flooding-protection',
+            '--disable-hang-monitor',
+            '--disable-popup-blocking',
+            '--disable-prompt-on-repost',
+            '--disable-client-side-phishing-detection',
+            '--disable-component-update',
+            '--no-first-run',
+            '--no-service-autorun',
+            '--password-store=basic',
+            '--use-mock-keychain',
+            '--no-default-browser-check',
+            '--disable-web-security',
+            '--allow-running-insecure-content',
+            '--disable-features=VizDisplayCompositor',
+            '--disable-gpu-sandbox',
+
+            '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+            '--window-size=1920,1080'
+        ]
+    });
+
+}
+
 async function createBrowserContext(browser) {
-    const context = await browser.newContext({
+    return await browser.newContext({
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        viewport: { width: 1920, height: 1080 },
+        viewport: {width: 1920, height: 1080},
         locale: 'en-US',
         timezoneId: 'America/New_York',
 
@@ -26,13 +71,11 @@ async function createBrowserContext(browser) {
 
         permissions: ['geolocation', 'notifications'],
 
-        screen: { width: 1920, height: 1080 },
+        screen: {width: 1920, height: 1080},
         deviceScaleFactor: 1,
         isMobile: false,
         hasTouch: false
     });
-
-    return context;
 }
 
 async function setupAntiDetection(page) {
@@ -234,14 +277,15 @@ async function loginDirectHome(page, username, password) {
     }
 }
 
-async function configBrowser(links, users, browser, jsonConfig) {
+async function configBrowser(links, users, jsonConfig) {
     const pagesMain = [];
+
+    const browser = await createStealthBrowser();
 
     try {
         for (const user of users) {
             console.log(`Tiến hành mua hàng cho user: ${user.username}`, "\n");
 
-            // Delay giữa các user
             await delay(2000 + Math.random() * 3000);
 
             const context = await createBrowserContext(browser);
@@ -283,20 +327,19 @@ async function configBrowser(links, users, browser, jsonConfig) {
     } catch (error) {
         console.error(`Failed to configure browser:`, error.message);
         console.log("\n");
-        throw error; // Re-throw để main function xử lý
+        throw error;
     }
 
     return pagesMain;
 }
+
 function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
     return new Promise((resolve) => {
         const now = new Date();
         const target = new Date();
 
-        // Set giờ mục tiêu cho hôm nay
         target.setHours(targetHour, targetMinute, targetSecond, 0);
 
-        // Nếu đã qua giờ này hôm nay → hẹn cho ngày mai
         if (now >= target) {
             target.setDate(target.getDate() + 1);
         }
@@ -312,14 +355,13 @@ function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
         console.log(`⏳ Sẽ chạy sau ${Math.floor(timeUntilTarget / 1000)} giây...`);
         console.log("\n")
 
-        // Chỉ cần setTimeout một lần là đủ
         setTimeout(() => {
-            console.log(`✅ Đến giờ hẹn: ${new Date().toLocaleTimeString('vi-VN')}`);
-            console.log("\n")
+            console.log(`✅ Đến giờ hẹn: ${new Date().toLocaleTimeString('vi-VN')}`, "\n");
             resolve();
         }, timeUntilTarget);
     });
 }
+
 const addProductToCard = async (page, quantity) => {
     try {
         await page.waitForSelector('#qtySel', { state: 'visible', timeout: 5000 });
@@ -342,7 +384,6 @@ const addProductToCard = async (page, quantity) => {
     }
 };
 
-
 const proceedToCheckoutStep1 = async (page) => {
     try {
         const selector = 'a[href="/yc/shoppingcart/index.html?next=true"]';
@@ -354,9 +395,7 @@ const proceedToCheckoutStep1 = async (page) => {
         ]);
 
         console.log("✅ Đã nhấn nút 'Tiến hành thanh toán' (Step 1)");
-        console.log("\n")
         console.log("🌐 URL hiện tại:", page.url());
-        console.log("\n")
         return true;
 
     } catch (error) {
@@ -365,6 +404,7 @@ const proceedToCheckoutStep1 = async (page) => {
         return false;
     }
 };
+
 const proceedToCheckoutStep2 = async (page) => {
     try {
         const selector = '#sc_i_buy';
@@ -384,6 +424,7 @@ const proceedToCheckoutStep2 = async (page) => {
         return false;
     }
 };
+
 const enterSecurityCode = async (page, cvvCode) => {
     try {
         const cvvInput = await page.$('input[name="creditCard.securityCode"]');
@@ -412,6 +453,7 @@ const enterSecurityCode = async (page, cvvCode) => {
         return false;
     }
 }
+
 const placeOrder = async (page) => {
     try {
         const selectors = [
@@ -446,12 +488,101 @@ const placeOrder = async (page) => {
         return false;
     }
 };
+
 const reloadAllPages = async (pages) => {
     console.log("Thực hiện reload tất cả các trang\n")
     pages.forEach((page) => {
         page.reload();
     })
 }
+
+async function processSingleBrowser(browser, browserIndex) {
+    console.log("-------------------------------------------------------------------------");
+    const startChild = new Date();
+    console.log(`[Browser ${browserIndex + 1}] Bắt đầu mua hàng cho tài khoản --- ${browser.user.username}`);
+
+    try {
+        const cvv = browser.user.cvv;
+
+        for (const { page, quantity } of browser.page) {
+            await addProductToCard(page, quantity);
+        }
+
+        const page = browser.pageCart;
+        console.log(`[Browser ${browserIndex + 1}] Reload lại giỏ hàng`);
+        await page.reload();
+
+        await proceedToCheckoutStep1(page);
+        await proceedToCheckoutStep2(page);
+        await enterSecurityCode(page, cvv);
+        await placeOrder(page);
+
+        console.log(`[Browser ${browserIndex + 1}] Đặt thành công đơn hàng !`);
+        const endChild = new Date();
+        console.log(`[Browser ${browserIndex + 1}] Kết thúc mua hàng cho tài khoản --- ${browser.user.username} với tổng thời gian ${(endChild - startChild)/1000}s`);
+        console.log("--------------------------------------------------------------------------");
+
+        return {
+            success: true,
+            username: browser.user.username,
+            duration: (endChild - startChild) / 1000,
+            browserIndex: browserIndex + 1
+        };
+
+    } catch (error) {
+        const endChild = new Date();
+        console.error(`[Browser ${browserIndex + 1}] Lỗi khi xử lý tài khoản ${browser.user.username}:`, error.message);
+        console.log("--------------------------------------------------------------------------");
+
+        return {
+            success: false,
+            username: browser.user.username,
+            error: error.message,
+            duration: (endChild - startChild) / 1000,
+            browserIndex: browserIndex + 1
+        };
+    }
+}
+
+async function processAllBrowsersParallel(pagesMain) {
+    console.log(`🚀 Bắt đầu xử lý ${pagesMain.length} browsers song song...`);
+    const startTime = new Date();
+
+    const browserPromises = pagesMain.map((browser, index) =>
+        processSingleBrowser(browser, index)
+    );
+
+    const results = await Promise.allSettled(browserPromises);
+
+    const endTime = new Date();
+    const totalDuration = (endTime - startTime) / 1000;
+
+    // Thống kê kết quả
+    const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const errorCount = results.length - successCount;
+
+    console.log(`\n📊 TỔNG KẾT SONG SONG:`);
+    console.log(`✅ Thành công: ${successCount}/${results.length}`);
+    console.log(`❌ Lỗi: ${errorCount}/${results.length}`);
+    console.log(`⏱️ Tổng thời gian: ${totalDuration}s`);
+
+    // Chi tiết từng kết quả
+    results.forEach((result, index) => {
+        if (result.status === 'fulfilled') {
+            const data = result.value;
+            console.log(`[${data.browserIndex}] ${data.username}: ${data.success ? '✅' : '❌'} (${data.duration}s)`);
+            if (!data.success) {
+                console.log(`    Error: ${data.error}`);
+            }
+        } else {
+            console.log(`[${index + 1}] Rejected: ${result.reason}`);
+        }
+    });
+
+    return results.map(r => r.status === 'fulfilled' ? r.value : null);
+}
+
+
 const proceedWith3DSecure = async (page) => {
     try {
         const selector = '#threedsecureExplain_Ok';
@@ -478,6 +609,7 @@ const proceedWith3DSecure = async (page) => {
 
 module.exports = {
     configBrowser,
+    processAllBrowsersParallel,
     waitUntilTime,
     delay,
     addProductToCard,
