@@ -1,16 +1,10 @@
 const fs = require('fs-extra');
-const {chromium} = require('playwright');
 const config = require('./config');
 const {
     configBrowser,
     waitUntilTime,
-    delay,
     reloadAllPages,
-    addProductToCard,
-    proceedToCheckoutStep1,
-    proceedToCheckoutStep2,
-    placeOrder,
-    enterSecurityCode
+    processAllBrowsersParallel
 } = require("./function");
 
 
@@ -24,28 +18,9 @@ const {
         const links = jsonData.linkList || [];
         const jsonConfig = jsonData.config || {};
 
-        console.log('Data loaded:', {usersCount: users.length, linksCount: links.length});
+        console.log('Dữ liệu chuẩn bị mua hàng :', {usersCount: users.length, linksCount: links.length});
 
-        const browser = await chromium.launch({
-            headless: false,
-            slowMo: config.browser.slowMo,
-            args: [
-                '--disable-blink-features=AutomationControlled',
-                '--disable-web-security',
-                '--disable-features=VizDisplayCompositor',
-                '--no-first-run',
-                '--no-default-browser-check',
-                '--disable-extensions',
-                '--disable-plugins',
-                '--disable-default-apps',
-                '--start-maximized'
-            ]
-        });
-
-        // Sử dụng hàm đã tách
-        const pagesMain = await configBrowser(links, users, browser, jsonConfig);
-        console.log(pagesMain)
-
+        const pagesMain = await configBrowser(links, users, jsonConfig);
         console.log('⏳ Bắt đầu hẹn giờ chạy chương trình \n');
 
         await (async () => {
@@ -62,35 +37,25 @@ const {
         );
         await reloadAllPages(allPages);
 
+        let results = await processAllBrowsersParallel(pagesMain);
 
-        for (const browser of pagesMain) {
-            console.log("-------------------------------------------------------------------------")
-            const startChild = new Date();
-            console.log("Bắt đầu mua hàng cho tài khoản --- ", browser.user.username)
-            const cvv = browser.user.cvv;
-            for (const { page, quantity } of browser.page) {
-                await addProductToCard( page, quantity );
-            }
-            const page = null;
-            // await proceedToCheckoutStep1( page );
-            // await delay(1000);
-            // await proceedToCheckoutStep2( page );
-            // await delay(1000);
-            // await enterSecurityCode( page, cvv );
-            // await delay(1000);
-            // await placeOrder( page );
-            // await delay(1000);
-            console.log("Đặt thành công đơn hàng !")
-            // await proceedWith3DSecure( page );
+        const successResults = results.filter(r => r && r.success);
+        const failedResults = results.filter(r => r && !r.success);
 
+        console.log(`\n🎯 FINAL SUMMARY:`);
+        console.log(`Total processed: ${results.length}`);
+        console.log(`Successful orders: ${successResults.length}`);
+        console.log(`Failed orders: ${failedResults.length}`);
 
-            const endChild = new Date();
-            console.log("Kết thúc mua hàng cho tài khoản --- ", browser.user.username, " tổng thời gian ", endChild - startChild);
-            console.log("--------------------------------------------------------------------------")
+        if (failedResults.length > 0) {
+            console.log(`\n❌ Failed accounts:`);
+            failedResults.forEach(result => {
+                console.log(`- ${result.username}: ${result.error}`);
+            });
         }
 
-        console.log(`⏳ Tổng thời gian từ lúc bắt đầu mở tool: ${new Date().getTime() - start.getTime()}ms \n`);
-        console.log(`⏳ Tổng thời gian từ lúc bắt đầu mua hàng: ${new Date().getTime() - startBuy.getTime()}ms \n`);
+        console.log(`⏳ Tổng thời gian từ lúc bắt đầu mở tool: ${(new Date().getTime() - start.getTime())/1000}ms \n`);
+        console.log(`⏳ Tổng thời gian từ lúc bắt đầu mua hàng: ${(new Date().getTime() - startBuy.getTime())/1000}ms \n`);
 
     } catch (error) {
         console.error('Main Error:', error.message);
