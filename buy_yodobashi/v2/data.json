@@ -19,8 +19,8 @@
   "config": {
     "loginLink" : "https://order.yodobashi.com/yc/login/index.html?returnUrl=https%3A%2F%2Fwww.yodobashi.com%2F%3Flogout%3Dtrue%26yclogout%3Dtrue",
     "cardLink" : "https://order.yodobashi.com/yc/shoppingcart/index.html",
-    "hourRun": 23,
-    "minuteRun": 3,
-    "secondRun": 35
+    "hourRun": 9,
+    "minuteRun": 28,
+    "secondRun": 25
   }
 }
