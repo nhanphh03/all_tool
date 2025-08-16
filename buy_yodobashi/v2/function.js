@@ -372,7 +372,7 @@ const addProductToCard = async (page, quantity) => {
             document.querySelector('#qtyTextNew').value = qty;
         }, quantity);
 
-        console.log(`✅ Đã chọn số lượng: ${quantity}`);
+        console.log(`✅ Đã nhập số lượng: ${quantity}`);
 
         await page.waitForSelector('#js_m_submitRelated', { state: 'visible', timeout: 5000 });
         await page.click('#js_m_submitRelated');
@@ -405,7 +405,7 @@ const proceedToCheckoutStep1 = async (page) => {
     }
 };
 
-const proceedToCheckoutStep2 = async (page) => {
+const proceedToCheckout = async (page) => {
     try {
         const selector = '#sc_i_buy';
         await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
@@ -429,7 +429,7 @@ const enterSecurityCode = async (page, cvvCode) => {
     try {
         const cvvInput = await page.$('input[name="creditCard.securityCode"]');
         if (cvvInput) {
-            await cvvInput.fill(''); // Clear
+            await cvvInput.fill('');
 
             await cvvInput.fill(cvvCode.toString());
             console.log(`✅ Đã nhập CVV: ${cvvCode}`);
@@ -453,41 +453,26 @@ const enterSecurityCode = async (page, cvvCode) => {
         return false;
     }
 }
-
-const placeOrder = async (page) => {
+const confirmOrder = async (page) => {
     try {
-        const selectors = [
-            'a.js_c_order',
-            'a:has-text("注文を確定する")',
-            'a.btnRed.js_c_order',
-            'a[href="javascript:void(0)"].btnRed',
-            'a.js_c_filterBtn[style*="width: 230px"]'
-        ];
+        const selector = 'a.btnRed.js_c_order.js_c_filterBtn';
+        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
 
-        for (const selector of selectors) {
-            if (await page.$(selector)) {
-                await page.waitForSelector(selector, { state: 'visible', timeout: 50000 });
-                await Promise.all([
-                    page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
-                    page.click(selector)
-                ]);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 50000 }),
+            page.click(selector)
+        ]);
 
-                console.log("✅ Đã nhấn nút 'Đặt hàng của bạn'");
-                console.log("\n")
-                console.log(`📍 Order completed. URL: ${page.url()}`);
-                return true;
-            }
-        }
-        console.error("❌ Không tìm thấy nút đặt hàng");
-        console.log("\n")
-        return false;
+        console.log("✅ Đã nhấn nút '注文を確定する' (Xác nhận đặt hàng)\n");
+        console.log("🌐 URL hiện tại: ", page.url(), "\n");
+        return true;
 
     } catch (error) {
-        console.error("❌ Lỗi khi đặt hàng:", error.message);
-        console.log("\n")
+        console.error("❌ Không tìm thấy hoặc không thể click '注文を確定する':", error.message, "\n");
         return false;
     }
 };
+
 
 const reloadAllPages = async (pages) => {
     console.log("Thực hiện reload tất cả các trang\n")
@@ -513,9 +498,9 @@ async function processSingleBrowser(browser, browserIndex) {
         await page.reload();
 
         await proceedToCheckoutStep1(page);
-        await proceedToCheckoutStep2(page);
+        await proceedToCheckout(page);
         await enterSecurityCode(page, cvv);
-        await placeOrder(page);
+        await confirmOrder(page);
 
         console.log(`[Browser ${browserIndex + 1}] Đặt thành công đơn hàng !`);
         const endChild = new Date();
@@ -613,10 +598,6 @@ module.exports = {
     waitUntilTime,
     delay,
     addProductToCard,
-    proceedToCheckoutStep1,
-    proceedToCheckoutStep2,
-    placeOrder,
     proceedWith3DSecure,
-    enterSecurityCode,
     reloadAllPages
 };

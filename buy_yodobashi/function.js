@@ -301,35 +301,20 @@ const enterSecurityCode = async (page, cvvCode) => {
 }
 const placeOrder = async (page) => {
     try {
-        const selectors = [
-            'a.js_c_order',
-            'a:has-text("注文を確定する")',
-            'a.btnRed.js_c_order',
-            'a[href="javascript:void(0)"].btnRed',
-            'a.js_c_filterBtn[style*="width: 230px"]'
-        ];
+        const selector = 'a.btnRed.js_c_order.js_c_filterBtn';
+        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
 
-        for (const selector of selectors) {
-            if (await page.$(selector)) {
-                await page.waitForSelector(selector, { state: 'visible', timeout: 50000 });
-                await Promise.all([
-                    page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30000 }),
-                    page.click(selector)
-                ]);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 50000 }),
+            page.click(selector)
+        ]);
 
-                console.log("✅ Đã nhấn nút 'Đặt hàng của bạn'");
-                console.log("\n")
-                console.log(`📍 Order completed. URL: ${page.url()}`);
-                return true;
-            }
-        }
-        console.error("❌ Không tìm thấy nút đặt hàng");
-        console.log("\n")
-        return false;
+        console.log("✅ Đã nhấn nút '注文を確定する' (Xác nhận đặt hàng)\n");
+        console.log("🌐 URL hiện tại: ", page.url(), "\n");
+        return true;
 
     } catch (error) {
-        console.error("❌ Lỗi khi đặt hàng:", error.message);
-        console.log("\n")
+        console.error("❌ Không tìm thấy hoặc không thể click '注文を確定する':", error.message, "\n");
         return false;
     }
 };
