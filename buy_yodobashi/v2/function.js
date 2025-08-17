@@ -1,47 +1,63 @@
-const config = require("./config");
 const { chromium } = require('playwright');
+const fs = require('fs').promises;
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 async function createStealthBrowser() {
     return  await chromium.launch({
         executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-        headless: false
+        headless: false,
+        args: [
+            '--disable-blink-features=AutomationControlled',
+            '--disable-automation',
+            '--disable-dev-shm-usage',
+            '--disable-extensions',
+            '--no-first-run'
+        ]
     });
-
 }
 
-async function createBrowserContext(browser) {
-    return await browser.newContext({
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        viewport: {width: 1920, height: 1080},
-        locale: 'en-US',
-        timezoneId: 'America/New_York',
+async function createBrowserContext(browser, username) {
+    let storageState = {};
+    let isCookie = false;
+    try {
+        const cookiesData = await fs.readFile(`cookies/${username}.json`, 'utf-8');
+        storageState = JSON.parse(cookiesData);
+        console.log(`Đã tải cookies cho ${username} từ cookies/${username}.json`);
+        isCookie = true;
+    } catch (error) {
+        console.log(`Không tìm thấy cookies cho ${username}, sẽ đăng nhập thủ công`, error.message);
+    }
 
-        extraHTTPHeaders: {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'DNT': '1',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Sec-Fetch-User': '?1',
-            'Cache-Control': 'max-age=0',
-            'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"'
-        },
-
-        permissions: ['geolocation', 'notifications'],
-
-        screen: {width: 1920, height: 1080},
-        deviceScaleFactor: 1,
-        isMobile: false,
-        hasTouch: false
-    });
+    return {
+        context: await browser.newContext({
+            userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+            viewport: { width: 1920, height: 1080 },
+            locale: 'ja',
+            timezoneId: 'Asia/Tokyo',
+            extraHTTPHeaders: {
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1',
+                'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"macOS"'
+            },
+            permissions: ['geolocation', 'notifications'],
+            screen: { width: 1920, height: 1080 },
+            deviceScaleFactor: 1,
+            isMobile: false,
+            hasTouch: false,
+            storageState: storageState
+        }),
+        isCookie: isCookie
+    };
 }
 
 async function setupAntiDetection(page) {
@@ -215,7 +231,7 @@ async function createChildPages(context, links) {
     return pagesChildren;
 }
 
-async function loginDirectHome(page, username, password) {
+async function loginDirectHome(page, username, password, context) {
     const userNameDOM = `[id="memberId"]`;
     const passwordDOM = `[id="password"]`;
 
@@ -232,7 +248,10 @@ async function loginDirectHome(page, username, password) {
             await btnLoginDOM.click();
             console.log("✅ Đăng nhập thành công !", "\n");
 
-            await page.waitForLoadState('networkidle', {timeout: 30000});
+            await page.waitForLoadState('networkidle', {timeout: 50000});
+
+             await context.storageState({ path: `cookies/${username}.json` });
+
             return true;
         } else {
             console.error("Không tìm thấy nút đăng nhập\n");
@@ -256,7 +275,9 @@ async function configBrowser(links, users, jsonConfig) {
 
             await delay(2000 + Math.random() * 3000);
 
-            const context = await createBrowserContext(browser);
+            const result = await createBrowserContext(browser, user.username);
+            const context = result.context;
+            const isCookie = result.isCookie;
             const pageChild = {
                 user: user,
                 page: [],
@@ -266,22 +287,31 @@ async function configBrowser(links, users, jsonConfig) {
             };
 
             try {
-                const pageHome = await context.newPage();
-                await setupAntiDetection(pageHome);
 
                 const pageCart = await context.newPage();
                 await setupAntiDetection(pageCart);
 
-                const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
-                if (navigationSuccess) {
-                    console.log(`Thực hiện đăng nhập cho user: ${user.username}`, "\n");
-                    const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
-                    pageChild.loginSuccess = loginSuccess;
-                    if (loginSuccess) {
-                        pageChild.page = await createChildPages(context, links);
-                        pageChild.pageCart = await gotoPageCard(pageCart, jsonConfig.cardLink);
+                if (!isCookie) {
+                    const pageHome = await context.newPage();
+                    await setupAntiDetection(pageHome);
+
+                    const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
+                    if (navigationSuccess) {
+                        console.log(`Thực hiện đăng nhập cho user: ${user.username}`, "\n");
+                        const loginSuccess = await loginDirectHome(pageHome, user.username, user.password, context);
+                        pageChild.loginSuccess = loginSuccess;
+                        if (loginSuccess) {
+                            await context.storageState({ path: `cookies/${user.username}.json` });
+                            console.log(`✅ Đã lưu cookies cho ${user.username} vào cookies/${user.username}.json`, "\n");
+                            console.log("✅ Đăng nhập thành công !", "\n");
+                        }
                     }
                 }
+
+                await refreshCookies(context, user.username);
+
+                pageChild.page = await createChildPages(context, links);
+                pageChild.pageCart = await gotoPageCard(pageCart, jsonConfig.cardLink);
 
                 pagesMain.push(pageChild);
 
@@ -299,6 +329,22 @@ async function configBrowser(links, users, jsonConfig) {
     }
 
     return pagesMain;
+}
+
+async function refreshCookies(context, username) {
+    const page = await context.newPage();
+    await setupAntiDetection(page);
+
+    try {
+        await context.storageState({ path: `cookies/${username}.json` });
+        console.log(`✅ Đã làm mới và lưu cookies cho ${username} vào cookies/${username}.json`);
+        await page.close();
+        return true;
+    } catch (error) {
+        console.error(`Lỗi khi làm mới cookies cho ${username}:`, error.message);
+        await page.close();
+        return false;
+    }
 }
 
 function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {

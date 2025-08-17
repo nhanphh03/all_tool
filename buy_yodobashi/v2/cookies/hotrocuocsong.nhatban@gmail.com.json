@@ -1,0 +1,305 @@
+{
+  "cookies": [
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1789229014.331379,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "yid",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "2C44BC1A3A25B4346F4DA47C1007366B"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1763212374.506322,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "yatpz",
+      "path": "/",
+      "sameSite": "no_restriction",
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "C1A2XJax%2BLPLYuRQDc%2BFUjsCBK1aMyeJibPzjyCNtdBuw8GNCZNpAM1EiQ%3D%3D"
+    },
+    {
+      "domain": "www.yodobashi.com",
+      "hostOnly": true,
+      "httpOnly": false,
+      "name": "variodr",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": true,
+      "storeId": null,
+      "value": "100000001003891482"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1763216609.88126,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "tlg_lid",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "aremuexeayoekkduMERm4QMHqSPmc4IsZBIdww%3D%3D"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1755444207.948535,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "vf",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "64485F94A918306DD5B067D8157F0162465E975FEC256B0558572FA6FF2B60A53D25DC7D4B2C7240B2AED12A8FA58A4FEE00F400BA072A60D559289A97B01D9C"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "secure_id",
+      "path": "/",
+      "sameSite": "no_restriction",
+      "secure": true,
+      "session": true,
+      "storeId": null,
+      "value": "92C5D3171A10093BFD4695DD8E58D42E84A71063E994541744910CE01DCE22FF188E6F96646C876C473DBAA69A5CB0F4E62BABF36BEBD5332BB22BB19D2E760EC80762DA3F899C0CBF0BD788FA892F8A2242AC30C6EF658BC9236E477A89C256B9C6B5B4B05E3D4117AD2496D35B5247406C2A64359C92D096BE83B0B6ED0F37"
+    },
+    {
+      "domain": "www.yodobashi.com",
+      "expirationDate": 1790000608.948263,
+      "hostOnly": true,
+      "httpOnly": false,
+      "name": "uq",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "671a7418cddd76575a144b45e8ecfc7659982933"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1790000608.948585,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "google_crmid",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "YjA3NTVlNzk2NzlkMGFhMzQxOGI0NWNhMGQyNjhjZWI%3D"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1763212375.692599,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "ycn",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "\"FQZsZxCsPe7KQDTHf9Ao8ByxRP4TEFHVHkV8S2Cy39ivG53C6zdPPvPW4rKqPgBPkTRd2ao9sP3iqEHa:b0755e79679d0aa3418b45ca0d268ceb\""
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1786976610.00739,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "hty_login_time",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "\"100000001003891482-1755436363852_100000001003474500-1755403596653_100000001000320349-1752741871542_100000001005167373-1751679607487_100000001003645146-1751679522611_100000001003674858-1751675093438_100000001001475448-1751675085825_100000001009012319-1751242416961_100000001008096498-1751073817042_100000001001611667-1746836469766:\""
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1786972361.865309,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "hty_misc",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "qv7JtFuqwFW4WSaL2G5gsZLjst63UvbuUakhixEg64Jd3HvifEUKMGc3L5FXrZiNu62y2jbPzGKJ4rgy"
+    },
+    {
+      "domain": "www.yodobashi.com",
+      "hostOnly": true,
+      "httpOnly": false,
+      "name": "yuid",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": true,
+      "storeId": null,
+      "value": "612596A41000CE95A2CF10375B0A0D6A"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1755443559.881327,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "bm_sv",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "D3C329086EAF421369999179B6E699D6~YAAQKNgjFwL+a7KYAQAAqApquBxbpPSDPJmCTl4FHdNRnmAC5s7xV2LKx7NIChBE+z7DwCcJimMySmevlI9pOsfaQBqhW7EFtOAo+yNv+Nr+KabW8N4YOXvop6i2uZiqPsXqa9VmA7hkLkNhIJcLHsjdESOi/mw/1ZAAd/SbuLnCurwQQ/WFk3/Ds1SuVxqDzueVpTRHx/V2YJvQ2/0z9TKjrmD1SM1F9eDPPnVlc+1mPN5tntgwc7U/tdxJVnQYvXjrUA==~1"
+    },
+    {
+      "domain": "www.yodobashi.com",
+      "expirationDate": 1763216609.879228,
+      "hostOnly": true,
+      "httpOnly": false,
+      "name": "dduif",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "\"FQZsZxCsPe7KQDTHf9Ao8ByxRP4TEFHVHkV8S2Cy39ivG53C6zdPPvPW4rKqPgBPkTRd2ao9sP3iqEHa,doYxekaiWSYUynnKVMqwNHaGMXpGolkmgQWB99vPTrw=,1,4b6RPEC+koRHkvW4gnQg3dcdog3Vfwp+c3JSwyIK6wKyPAO4sZPhKA==,0\""
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1786972374.506518,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "_abck",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "3D7BAE08E9DD689FD9B9B0F4C771C2F5~0~YAAQzb0oF5gHy6yYAQAABmIpuA7ogVLps2KNdVraiwI3ipD4ocxIjeUeA9g7B2h65CltU5ylUEiynsi93oamEvHsIlFFJm2kpx/Wg+7m2w1JH7ikRXIqTBpoWXsmYl1pUdTCHHpkdjP0YdKUc4sEUxaryCqVwaBGcZjmmnZjZtod2Z1voMH5WPEp0m/rclbj9kDoU1lbFXNh9xVjZSUY320PJzH15LDk1yj2QTXBO7KTiIevIznjIo7zN/5/jnBfLDJWFtuGgzj3na/GveVqWTs5VuZKTWl1/OT/666805stIqDQ5ejEnNg4nMwdNcSTYJsZEx6MDpdISXylNXnqwpbWeOM4VZed7qKdiHRltqQGuO9qkEjQAoYcG29Pn3l/xyI4OAlJgTs5Q2gOYOaXgRaFRfzqRIjBNSNISFmANN/pGKfrDJBh3EIpTm1YxkfpEaP5CnmKzzRhAHSHZ/R+qqbSHVec5D7tEnOhWTgP+Tu0lP0IJDuDNumDSdXD++k6IMvXLtS9X+m31qfSR3/wVtLyhQ/5KUeY60oEmBTIFWbv0jV7HYdRWUk1+1PJ0OgSOGKpCnUDzn327+WodK85pkCG7IdqRHaCIueDVqGZDKwJKd/IrvSUF11XhkagjMjC6NNqfGBK9Ad6AjlLGzxa/7SdasjHYMEKx/xnRQQDozKrnU5VfiOwROqeZJnGa11VUBNGiUebbCNL0bWZl9qnlnK2GishOBemlqjUW6mU8B3KYYZuPuDkTUHK1Bl659J/cfJ8BqCeL82v4O9jBB8s1MRbVkNfSGkFqTh8j3DrJYA=~-1~-1~-1"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1786972374.506164,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "auto_id",
+      "path": "/",
+      "sameSite": "no_restriction",
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "FQZsZxCsPe7KQDTHf9Ao8ByxRP4TEFHVHkV8S2Cy39ivG53C6zdPPvPW4rKqPgBPkTRd2ao9sP3iqEHa"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1755443560.571468,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "bm_mi",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "C86981EF773B7DE3268B75A7D3BBDA31~YAAQKNgjF2r4ULKYAQAA80IpuBwC3fkxK3lewNJ7b4xbbtGh4HTDwnpt/VO/nIUYAoVxvOOFdiD9yBothdoIAV3ZRnPmkkcVVGKWQ9gTBPov6CGxggNA7TW+xe02//7A+nya+Dg5grD2VKj6h82MrknXWs20Skm7IoZW6DetO44CIqSaWrI+mD9b5pBImF6U4+aI4FgHaz5DCyS4XBJHn6P1+kDZ1aMaWGHjfmBLYq/unXEjulNW0BWC1wNDe7Cb1ugWkUYv9QHg2WrcqVjbQuzMrgHLFXJ7mWybLAaDu9mjo2wjPHM+ysm6t8M2nT+ASA==~1"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1786722510.333273,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "hty_logout_time",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "\"100000001003891482-1755186510103:\""
+    },
+    {
+      "domain": "www.yodobashi.com",
+      "hostOnly": true,
+      "httpOnly": true,
+      "name": "JSESSIONID",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": true,
+      "storeId": null,
+      "value": "B772BE576B100748D5835CAD5878D66B"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1790000608.948201,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "newses",
+      "path": "/",
+      "sameSite": null,
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "0"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "expirationDate": 1755657851.428779,
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "yecid",
+      "path": "/",
+      "sameSite": "no_restriction",
+      "secure": true,
+      "session": false,
+      "storeId": null,
+      "value": "369dd53cf481744c23ebf46f1917f89e6ffc85f7"
+    },
+    {
+      "domain": ".yodobashi.com",
+      "hostOnly": false,
+      "httpOnly": false,
+      "name": "yjsid",
+      "path": "/",
+      "sameSite": "no_restriction",
+      "secure": true,
+      "session": true,
+      "storeId": null,
+      "value": "EFB8B355344E507B7C981E012AAB1A8A"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.yodobashi.com",
+      "localStorage": [
+        {
+          "name": "_gcl_ls",
+          "value": "{\"schema\":\"gcl\",\"version\":1,\"gcl_ctr\":{\"value\":{\"value\":0,\"creationTimeMs\":1754134472713},\"expires\":1761910472713}}"
+        },
+        {
+          "name": "cto_bundle",
+          "value": "udDiNV9QVGNRTk1YZEhYeFZ2dVFUODNrNDhacmRhYkJYOW9GRUhGQXpzYm9CNkxYbWpBSHh4RlhLdnBoYjIwOEFyWWhLTzk0ZktZbjBNZEhEYiUyQmxhYmVWYlpFQ2hJSllqMU5zOEQ1YTVORzlscXg5TXBCV0lFYzZxQ3clMkJwTnAlMkZOUW8zZjBvMzlMcklPd0Vza2t4Tk9nRU0zSHhxVGVXMiUyQnhaenYweFklMkJTcHFQUmVtb28xU0ZlNW5oNyUyQm9zYU9ndXRxNDc"
+        },
+        {
+          "name": "_yjsu_yjad",
+          "value": "1754134473.8982ccb4-5a41-4c1c-930d-8503250f7072"
+        }
+      ]
+    }
+  ]
+
+}
