@@ -137,32 +137,33 @@ async function configBrowser(links, users, browser, jsonConfig) {
             // Tạo context cho user
             const context = await createBrowserContext(browser);
 
+            const pageHome = await context.newPage();
             // Tạo object để lưu thông tin user và pages
-            const pageChild = {
-                user: user, page: [], context: context, loginSuccess: false
-            };
-
+            // const pageChild = {
+            //     user: user, page: [], context: context, loginSuccess: false
+            // };
+            //
             try {
-                // Tạo trang home
-                const pageHome = await context.newPage();
-                await setupAntiDetection(pageHome);
-
-                // Điều hướng đến trang login
-                const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
-
-                if (navigationSuccess) {
-                    // Thực hiện đăng nhập
-                    console.log(`Thực hiện đăng nhập cho user: ${user.username}`);
-                    console.log("\n")
-                    const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
-                    pageChild.loginSuccess = loginSuccess;
-
-                    if (loginSuccess) {
-                        pageChild.page = await createChildPages(context, links);
-                    }
-                }
-
-                pagesMain.push(pageChild);
+            //     // Tạo trang home
+            //     const pageHome = await context.newPage();
+            //     await setupAntiDetection(pageHome);
+            //
+            //     // Điều hướng đến trang login
+            //     const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
+            //
+            //     if (navigationSuccess) {
+            //         // Thực hiện đăng nhập
+            //         console.log(`Thực hiện đăng nhập cho user: ${user.username}`);
+            //         console.log("\n")
+            //         const loginSuccess = await loginDirectHome(pageHome, user.username, user.password);
+            //         pageChild.loginSuccess = loginSuccess;
+            //
+            //         if (loginSuccess) {
+            //             pageChild.page = await createChildPages(context, links);
+            //         }
+            //     }
+            //
+            //     pagesMain.push(pageChild);
 
             } catch (userError) {
                 console.error(`Error processing user ${user.username}:`, userError.message);

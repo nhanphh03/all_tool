@@ -4,16 +4,22 @@
       "username": "jrevexozip@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "982"
+    },
+    {
+      "username": "hotrocuocsong.nhatban@gmail.com",
+      "password": "Mrngoan0812",
+      "cvv": "404"
+    },
+    {
+      "username": "z.arinacanario@gmail.com",
+      "password": "Mrngoan0812",
+      "cvv": "685"
     }
   ],
   "linkList": [
     {
       "child": "https://www.yodobashi.com/product/100000001002973989/",
-      "quantity": 4
-    },
-    {
-      "child": "https://www.yodobashi.com/product/100000001002973154/",
-      "quantity": 4
+      "quantity": 1
     }
   ],
   "config": {
