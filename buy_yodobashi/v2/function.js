@@ -4,43 +4,9 @@ const { chromium } = require('playwright');
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 async function createStealthBrowser() {
-
-    return await chromium.launch({
-        headless: false,
-        slowMo: config.browser.slowMo,
-        args: [
-            '--disable-blink-features=AutomationControlled',
-            '--disable-features=VizDisplayCompositor',
-            '--disable-automation',
-            '--exclude-switches=enable-automation',
-            '--disable-dev-shm-usage',
-            '--disable-extensions',
-            '--disable-default-apps',
-            '--disable-sync',
-            '--disable-translate',
-            '--disable-background-timer-throttling',
-            '--disable-backgrounding-occluded-windows',
-            '--disable-renderer-backgrounding',
-            '--disable-features=TranslateUI',
-            '--disable-ipc-flooding-protection',
-            '--disable-hang-monitor',
-            '--disable-popup-blocking',
-            '--disable-prompt-on-repost',
-            '--disable-client-side-phishing-detection',
-            '--disable-component-update',
-            '--no-first-run',
-            '--no-service-autorun',
-            '--password-store=basic',
-            '--use-mock-keychain',
-            '--no-default-browser-check',
-            '--disable-web-security',
-            '--allow-running-insecure-content',
-            '--disable-features=VizDisplayCompositor',
-            '--disable-gpu-sandbox',
-
-            '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-            '--window-size=1920,1080'
-        ]
+    return  await chromium.launch({
+        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        headless: false
     });
 
 }
@@ -53,8 +19,8 @@ async function createBrowserContext(browser) {
         timezoneId: 'America/New_York',
 
         extraHTTPHeaders: {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'Accept-Language': 'en-US,en;q=0.9,vi;q=0.8',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'ja,en-US;q=0.9,en;q=0.8',
             'Accept-Encoding': 'gzip, deflate, br',
             'DNT': '1',
             'Connection': 'keep-alive',
@@ -123,6 +89,7 @@ async function setupAntiDetection(page) {
             ],
         });
 
+        // Enhanced navigator properties
         Object.defineProperty(navigator, 'languages', {
             get: () => ['en-US', 'en', 'vi'],
         });
@@ -211,6 +178,7 @@ async function navigateToPage(page, url, maxRetries = 3) {
             await delay(baseDelay + jitter);
         }
     }
+
     return false;
 }
 
@@ -349,11 +317,7 @@ function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
         console.log(`Giờ hiện tại: ${now.toLocaleTimeString('vi-VN')}`);
         console.log(`Giờ hẹn chạy: ${target.toLocaleTimeString('vi-VN')}`);
 
-        // console.log(`Giờ hiện tại: ${now.toLocaleTimeString('ja-JP')}`);
-        // console.log(`Giờ hẹn chạy: ${target.toLocaleTimeString('ja-JP')}`);
-
-        console.log(`⏳ Sẽ chạy sau ${Math.floor(timeUntilTarget / 1000)} giây...`);
-        console.log("\n")
+        console.log(`⏳ Sẽ chạy sau ${Math.floor(timeUntilTarget / 1000)} giây... \n`);
 
         setTimeout(() => {
             console.log(`✅ Đến giờ hẹn: ${new Date().toLocaleTimeString('vi-VN')}`, "\n");
@@ -384,27 +348,6 @@ const addProductToCard = async (page, quantity) => {
     }
 };
 
-const proceedToCheckoutStep1 = async (page) => {
-    try {
-        const selector = 'a[href="/yc/shoppingcart/index.html?next=true"]';
-        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
-
-        await Promise.all([
-            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
-            page.click(selector)
-        ]);
-
-        console.log("✅ Đã nhấn nút 'Tiến hành thanh toán' (Step 1)");
-        console.log("🌐 URL hiện tại:", page.url());
-        return true;
-
-    } catch (error) {
-        console.error("❌ Không tìm thấy hoặc không thể click 'Tiến hành thanh toán' (Step 1):", error.message);
-        console.log("\n")
-        return false;
-    }
-};
-
 const proceedToCheckout = async (page) => {
     try {
         const selector = '#sc_i_buy';
@@ -416,7 +359,6 @@ const proceedToCheckout = async (page) => {
         ]);
 
         console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2) \n");
-        console.log("🌐 URL hiện tại: ", page.url(), "\n");
         return true;
 
     } catch (error) {
@@ -473,7 +415,6 @@ const confirmOrder = async (page) => {
     }
 };
 
-
 const reloadAllPages = async (pages) => {
     console.log("Thực hiện reload tất cả các trang\n")
     pages.forEach((page) => {
@@ -484,7 +425,7 @@ const reloadAllPages = async (pages) => {
 async function processSingleBrowser(browser, browserIndex) {
     console.log("-------------------------------------------------------------------------");
     const startChild = new Date();
-    console.log(`[Browser ${browserIndex + 1}] Bắt đầu mua hàng cho tài khoản --- ${browser.user.username}`);
+    console.log(`Bắt đầu mua hàng cho tài khoản --- ${browser.user.username}`);
 
     try {
         const cvv = browser.user.cvv;
@@ -494,17 +435,17 @@ async function processSingleBrowser(browser, browserIndex) {
         }
 
         const page = browser.pageCart;
-        console.log(`[Browser ${browserIndex + 1}] Reload lại giỏ hàng`);
+        console.log(`✅ [Browser ${browserIndex + 1}] Reload lại giỏ hàng --- `, browser.user.username);
         await page.reload();
 
-        await proceedToCheckoutStep1(page);
         await proceedToCheckout(page);
         await enterSecurityCode(page, cvv);
-        await confirmOrder(page);
+        // await confirmOrder(page);
 
-        console.log(`[Browser ${browserIndex + 1}] Đặt thành công đơn hàng !`);
+        console.log("Đặt thành công đơn hàng ! --- ", browser.user.username);
         const endChild = new Date();
-        console.log(`[Browser ${browserIndex + 1}] Kết thúc mua hàng cho tài khoản --- ${browser.user.username} với tổng thời gian ${(endChild - startChild)/1000}s`);
+
+        console.log(`Kết thúc mua hàng cho tài khoản --- ${browser.user.username} với tổng thời gian ${(endChild - startChild)/1000}s`);
         console.log("--------------------------------------------------------------------------");
 
         return {
@@ -542,7 +483,6 @@ async function processAllBrowsersParallel(pagesMain) {
     const endTime = new Date();
     const totalDuration = (endTime - startTime) / 1000;
 
-    // Thống kê kết quả
     const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
     const errorCount = results.length - successCount;
 
@@ -551,13 +491,12 @@ async function processAllBrowsersParallel(pagesMain) {
     console.log(`❌ Lỗi: ${errorCount}/${results.length}`);
     console.log(`⏱️ Tổng thời gian: ${totalDuration}s`);
 
-    // Chi tiết từng kết quả
     results.forEach((result, index) => {
         if (result.status === 'fulfilled') {
             const data = result.value;
             console.log(`[${data.browserIndex}] ${data.username}: ${data.success ? '✅' : '❌'} (${data.duration}s)`);
             if (!data.success) {
-                console.log(`    Error: ${data.error}`);
+                console.log(`Error: ${data.error}`);
             }
         } else {
             console.log(`[${index + 1}] Rejected: ${result.reason}`);
@@ -567,37 +506,11 @@ async function processAllBrowsersParallel(pagesMain) {
     return results.map(r => r.status === 'fulfilled' ? r.value : null);
 }
 
-
-const proceedWith3DSecure = async (page) => {
-    try {
-        const selector = '#threedsecureExplain_Ok';
-        if (await page.$(selector)) {
-            await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
-
-            await Promise.all([
-                page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
-                page.click(selector)
-            ]);
-
-            console.log("✅ Đã nhấn nút 3D Secure\n");
-            console.log(`📍 3D Secure processed. URL: ${page.url()}`);
-            return true;
-        } else {
-            console.error("❌ Không tìm thấy nút 3D Secure");
-            return false;
-        }
-    } catch (error) {
-        console.error("❌ Lỗi khi xử lý 3D Secure:", error.message);
-        return false;
-    }
-};
-
 module.exports = {
     configBrowser,
     processAllBrowsersParallel,
     waitUntilTime,
     delay,
     addProductToCard,
-    proceedWith3DSecure,
     reloadAllPages
 };
