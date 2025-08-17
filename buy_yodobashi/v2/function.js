@@ -358,7 +358,7 @@ const proceedToCheckout = async (page) => {
             page.click(selector)
         ]);
 
-        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2) \n");
+        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2)");
         return true;
 
     } catch (error) {
@@ -395,6 +395,7 @@ const enterSecurityCode = async (page, cvvCode) => {
         return false;
     }
 }
+
 const confirmOrder = async (page) => {
     try {
         const selector = 'a.btnRed.js_c_order.js_c_filterBtn';
@@ -435,12 +436,12 @@ async function processSingleBrowser(browser, browserIndex) {
         }
 
         const page = browser.pageCart;
-        console.log(`✅ [Browser ${browserIndex + 1}] Reload lại giỏ hàng --- `, browser.user.username);
+        console.log(`✅ Reload lại giỏ hàng --- `, browser.user.username);
         await page.reload();
 
         await proceedToCheckout(page);
         await enterSecurityCode(page, cvv);
-        // await confirmOrder(page);
+        await confirmOrder(page);
 
         console.log("Đặt thành công đơn hàng ! --- ", browser.user.username);
         const endChild = new Date();
