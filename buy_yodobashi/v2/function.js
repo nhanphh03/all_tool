@@ -28,7 +28,6 @@ async function createBrowserContext(browser, username) {
     } catch (error) {
         console.log(`Không tìm thấy cookies cho ${username}, sẽ đăng nhập thủ công`, error.message);
     }
-
     return {
         context: await browser.newContext({
             userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
@@ -198,7 +197,7 @@ async function navigateToPage(page, url, maxRetries = 3) {
     return false;
 }
 
-async function gotoPageCard(page, url) {
+async function gotoPage(page, url) {
     await page.goto(url, {
         waitUntil: 'domcontentloaded', timeout: 60000
     });
@@ -206,29 +205,21 @@ async function gotoPageCard(page, url) {
     return page;
 }
 
-async function createChildPages(context, links) {
-    const pagesChildren = [];
+async function createChildPages(context, product ) {
 
-    for (const item of links) {
-        try {
-            const page = await context.newPage();
-            await setupAntiDetection(page);
-
-            page.goto(item.child).catch(err => {
-                console.error(`Failed to navigate to ${item.child}:`, err.message, " \n");
-            });
-
-            pagesChildren.push(
-                {
-                    page: page,
-                    quantity: item.quantity
-                }
-            );
-        } catch (error) {
-            console.error(`Failed to create page for ${item.child}:`, error.message, " \n");
-        }
+    try {
+        console.log("Khởi tạo trang sản phẩm", product.link, "với số lượng ", product.quantity)
+        const page = await context.newPage();
+        await setupAntiDetection(page);
+        await gotoPage(page, product.link);
+        return {
+                page: page,
+                quantity: product.quantity
+            }
+    } catch (error) {
+        console.error(`Failed to create page for ${product.link}:`, error.message, " \n");
     }
-    return pagesChildren;
+    return null;
 }
 
 async function loginDirectHome(page, username, password, context) {
@@ -250,8 +241,6 @@ async function loginDirectHome(page, username, password, context) {
 
             await page.waitForLoadState('networkidle', {timeout: 50000});
 
-             await context.storageState({ path: `cookies/${username}.json` });
-
             return true;
         } else {
             console.error("Không tìm thấy nút đăng nhập\n");
@@ -264,55 +253,69 @@ async function loginDirectHome(page, username, password, context) {
     }
 }
 
-async function configBrowser(links, users, jsonConfig) {
+async function checkLoginLink(page) {
+    try {
+        const element = await page.locator('a[href="https://order.yodobashi.com/yc/login/index.html?returnUrl=https%3A%2F%2Fwww.yodobashi.com%2Fproduct%2F100000001003891482%2Findex.html"][class="clicklog cl-hdLO2_1"]').count();
+        return element > 0; // Trả về true nếu phần tử tồn tại, false nếu không
+    } catch (error) {
+        console.error('Lỗi khi kiểm tra phần tử login link:', error.message);
+        return false;
+    }
+}
+
+async function configBrowser(product, users, jsonConfig) {
     const pagesMain = [];
 
     const browser = await createStealthBrowser();
 
     try {
         for (const user of users) {
+            console.log(user);
+            if(user.status === 'no'){
+                continue;
+            }
             console.log(`Tiến hành mua hàng cho user: ${user.username}`, "\n");
-
-            await delay(2000 + Math.random() * 3000);
 
             const result = await createBrowserContext(browser, user.username);
             const context = result.context;
             const isCookie = result.isCookie;
             const pageChild = {
                 user: user,
-                page: [],
+                pageProduct: null,
                 context: context,
                 loginSuccess: false,
-                pageCart: null
             };
 
             try {
+                const pageHome = await context.newPage();
+                const pageLogout = await context.newPage();
 
-                const pageCart = await context.newPage();
-                await setupAntiDetection(pageCart);
-
-                if (!isCookie) {
-                    const pageHome = await context.newPage();
-                    await setupAntiDetection(pageHome);
-
-                    const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
-                    if (navigationSuccess) {
-                        console.log(`Thực hiện đăng nhập cho user: ${user.username}`, "\n");
-                        const loginSuccess = await loginDirectHome(pageHome, user.username, user.password, context);
-                        pageChild.loginSuccess = loginSuccess;
-                        if (loginSuccess) {
-                            await context.storageState({ path: `cookies/${user.username}.json` });
-                            console.log(`✅ Đã lưu cookies cho ${user.username} vào cookies/${user.username}.json`, "\n");
-                            console.log("✅ Đăng nhập thành công !", "\n");
-                        }
+                if (isCookie) {
+                    console.log("Có cookie, vào trang chủ kiểm tra trạng thái cookie !")
+                    await gotoPage(pageHome, jsonConfig.homeLink);
+                    const isAvailable = await checkLoginLink(pageHome);
+                    if(isAvailable){
+                        console.log("Cookie không khả dụng, thực hiện đăng nhập lại !");
+                    }else{
+                        console.log("Cookie khả dụng, thực hiện đăng xuất ra và đăng nhập lại !")
+                        await gotoPage(pageLogout, jsonConfig.loginOut);
+                        console.log("Đăng xuất thành công! Thực hiện đăng nhập lại ")
+                    }
+                }
+                console.log("Thực hiện đăng nhập cho user: ",  user.username);
+                const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
+                if (navigationSuccess) {
+                    const loginSuccess = await loginDirectHome(pageHome, user.username, user.password, context);
+                    pageChild.loginSuccess = loginSuccess;
+                    if (loginSuccess) {
+                        await context.storageState({ path: `cookies/${user.username}.json` });
+                        console.log(`✅ Đã lưu cookies cho ${user.username} vào cookies/${user.username}.json`, "\n");
+                        console.log("✅ Đăng nhập thành công !\n");
                     }
                 }
 
-                await refreshCookies(context, user.username);
-
-                pageChild.page = await createChildPages(context, links);
-                pageChild.pageCart = await gotoPageCard(pageCart, jsonConfig.cardLink);
-
+                await setupAntiDetection(pageHome);
+                pageChild.pageProduct = await createChildPages(context, product);
                 pagesMain.push(pageChild);
 
             } catch (userError) {
@@ -329,22 +332,6 @@ async function configBrowser(links, users, jsonConfig) {
     }
 
     return pagesMain;
-}
-
-async function refreshCookies(context, username) {
-    const page = await context.newPage();
-    await setupAntiDetection(page);
-
-    try {
-        await context.storageState({ path: `cookies/${username}.json` });
-        console.log(`✅ Đã làm mới và lưu cookies cho ${username} vào cookies/${username}.json`);
-        await page.close();
-        return true;
-    } catch (error) {
-        console.error(`Lỗi khi làm mới cookies cho ${username}:`, error.message);
-        await page.close();
-        return false;
-    }
 }
 
 function waitUntilTime(targetHour, targetMinute = 0, targetSecond = 0) {
@@ -394,25 +381,6 @@ const addProductToCard = async (page, quantity) => {
     }
 };
 
-const proceedToCheckout = async (page) => {
-    try {
-        const selector = '#sc_i_buy';
-        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
-
-        await Promise.all([
-            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 50000 }),
-            page.click(selector)
-        ]);
-
-        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2)");
-        return true;
-
-    } catch (error) {
-        console.error("❌ Không tìm thấy hoặc không thể click 'Kế tiếp' (Step 2):", error.message, "\n");
-        return false;
-    }
-};
-
 const enterSecurityCode = async (page, cvvCode) => {
     try {
         const cvvInput = await page.$('input[name="creditCard.securityCode"]');
@@ -424,15 +392,15 @@ const enterSecurityCode = async (page, cvvCode) => {
 
             const inputValue = await cvvInput.inputValue();
             if (inputValue === cvvCode.toString()) {
-                console.log("✅ CVV đã được nhập chính xác\n");
+                console.log("✅ CVV đã được nhập chính xác");
             } else {
                 console.log(`⚠️ CVV không khớp. Expected: ${cvvCode}, Got: ${inputValue}\n`);
                 await cvvInput.fill('');
                 await cvvInput.type(cvvCode.toString(), {delay: 100});
-                console.log("🔄 Đã thử nhập CVV lại\n");
+                console.log("🔄 Đã thử nhập CVV lại");
             }
         } else {
-            console.log("✅ CVV validation passed");
+            console.log("✅ Không phát hiện ô nhập số CVV");
         }
 
         return true;
@@ -452,8 +420,8 @@ const confirmOrder = async (page) => {
             page.click(selector)
         ]);
 
-        console.log("✅ Đã nhấn nút '注文を確定する' (Xác nhận đặt hàng)\n");
-        console.log("🌐 URL hiện tại: ", page.url(), "\n");
+        console.log("✅ Đã nhấn nút '注文を確定する' (Xác nhận đặt hàng)");
+        console.log("🌐 URL hiện tại: ", page.url());
         return true;
 
     } catch (error) {
@@ -469,6 +437,47 @@ const reloadAllPages = async (pages) => {
     })
 }
 
+const proceedToCheckoutStep1 = async (page) => {
+    try {
+        const selector = 'a[href="/yc/shoppingcart/index.html?next=true"]';
+        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 10000 }),
+            page.click(selector)
+        ]);
+
+        console.log("✅ Đã nhấn nút 'Tiến hành thanh toán' (Step 1)");
+        console.log("🌐 URL hiện tại:", page.url());
+        return true;
+
+    } catch (error) {
+        console.error("❌ Không tìm thấy hoặc không thể click 'Tiến hành thanh toán' (Step 1):", error.message);
+        console.log("\n")
+        return false;
+    }
+};
+
+const proceedToCheckoutStep2 = async (page) => {
+    try {
+        const selector = '#sc_i_buy';
+        await page.waitForSelector(selector, { state: 'visible', timeout: 5000 });
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 50000 }),
+            page.click(selector)
+        ]);
+
+        console.log("✅ Đã nhấn nút 'Kế tiếp' (Step 2)");
+        console.log("🌐 URL hiện tại: ", page.url());
+        return true;
+
+    } catch (error) {
+        console.error("❌ Không tìm thấy hoặc không thể click 'Kế tiếp' (Step 2):", error.message);
+        return false;
+    }
+};
+
 async function processSingleBrowser(browser, browserIndex) {
     console.log("-------------------------------------------------------------------------");
     const startChild = new Date();
@@ -476,18 +485,15 @@ async function processSingleBrowser(browser, browserIndex) {
 
     try {
         const cvv = browser.user.cvv;
+        const pageProduct = browser.pageProduct.page;
+        const quantityProduct = browser.pageProduct.quantity;
 
-        for (const { page, quantity } of browser.page) {
-            await addProductToCard(page, quantity);
-        }
+        await addProductToCard(pageProduct, quantityProduct);
+        await proceedToCheckoutStep1( pageProduct );
+        await proceedToCheckoutStep2( pageProduct );
+        await enterSecurityCode(pageProduct, cvv);
 
-        const page = browser.pageCart;
-        console.log(`✅ Reload lại giỏ hàng --- `, browser.user.username);
-        await page.reload();
-
-        await proceedToCheckout(page);
-        await enterSecurityCode(page, cvv);
-        await confirmOrder(page);
+        // await confirmOrder(pageProduct);
 
         console.log("Đặt thành công đơn hàng ! --- ", browser.user.username);
         const endChild = new Date();
