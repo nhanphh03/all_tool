@@ -15,13 +15,18 @@ const {
         const jsonData = JSON.parse(data);
 
         const users = jsonData.users || [];
-        const links = jsonData.linkList || [];
+        const product = jsonData.product || [];
         const jsonConfig = jsonData.config || {};
 
-        console.log('Dữ liệu chuẩn bị mua hàng :', {usersCount: users.length, linksCount: links.length});
+        console.log('Dữ liệu chuẩn bị mua hàng :', {usersCount: users.length, product: product});
 
-        const pagesMain = await configBrowser(links, users, jsonConfig);
-        console.log('⏳ Bắt đầu hẹn giờ chạy chương trình \n');
+        const pagesMain = await configBrowser(product, users, jsonConfig);
+        console.log(pagesMain)
+        if (pagesMain.length === 0) {
+            console.log("Không có user nào hợp lệ !")
+            return;
+        }
+        console.log('⏳ Bắt đầu hẹn giờ chạy chương trình');
 
         await (async () => {
             await waitUntilTime(jsonConfig.hourRun, jsonConfig.minuteRun, jsonConfig.secondRun);
@@ -32,9 +37,8 @@ const {
 
         console.log("⏳ Bắt đầu mua hàng lúc ", startBuy.toLocaleTimeString('vi-VN') , " \n");
 
-        const allPages = pagesMain.flatMap(browser =>
-            browser.page.map(p => p.page)
-        );
+        const allPages = pagesMain.map(browser => browser.pageProduct.page);
+
         await reloadAllPages(allPages);
 
         let results = await processAllBrowsersParallel(pagesMain);
