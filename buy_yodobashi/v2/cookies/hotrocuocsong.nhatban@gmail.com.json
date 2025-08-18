@@ -1,0 +1,469 @@
+{
+  "cookies": [
+    {
+      "name": "bhs",
+      "value": "100000001009012319",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025441,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "fhs",
+      "value": "\"\"",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025488,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "hhs",
+      "value": "\"\"",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025543,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "rdh",
+      "value": "100000001003474500-100000001000320349-100000001003674858",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025573,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "crs",
+      "value": "\"\"",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.02564,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "prc",
+      "value": "100000001005710680-100000001006834200-100000001009106461",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025719,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "erc",
+      "value": "000000000000007003-500000000000000301-000000000000018003-000000000000016327",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025668,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "psn_misc",
+      "value": "9A7MEvtuskG4fi9rFLnCLbwJdCCsABVPkwGFASMkXgwBJQh4dGkWsemPkvETYRotZxSpF4qW8QRcY5xt",
+      "domain": "www.yodobashi.com",
+      "path": "/ws/api/recommend",
+      "expires": 1755538502.025749,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "24BD084D17F974393D6468A7D76034AA",
+      "domain": "order.yodobashi.com",
+      "path": "/ec",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "CE6950E73603EE96C37A9FD133C380A0",
+      "domain": "order.yodobashi.com",
+      "path": "/yc",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "js_env",
+      "value": "\"\"",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "yecid",
+      "value": "c8f7fe3b0e41be846d5687592cf2018ff6e22687",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755792288.012,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "BIGipServerPool_order_yodobashi_com_cms",
+      "value": "530688192.20480.0000",
+      "domain": "order.yodobashi.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ak_bmsc",
+      "value": "76F6D155F250F09EED1B772773886135~000000000000000000000000000000~YAAQzb0oF6woR62YAQAAiBztvRyknlGrCYchLOVHOCFagQCWIF0G3HgnvcL8JbVEzFvynyKndzEnPeWIVccCPjLHyrp7ElEtoJqgxwDag3MpqCW0Nl0VpeX5sFEsqCjbFafiNasVwpyChvBoile9vyqf7xmDnqGX2kMFJu0TOApDFix6pOOXbSr5JaBWcSMopi1SZ97l+bN0BdAiDYEv7PZ3/3vTgJ+usv6nz+Wt3WduA3l/QoWoD8p9m7J3zWs36FzqK0XQNCPC/3vwsWRjkb0u4fdaK2Ocw0c//5eTHtE+p4govE1/DZ3aJ9Q+5agcR9ntbl6LyU3KN9Kc28vx44QzonAfosZjaJPnV4NjXIMvqG8lvAowkus7Xgm0VNzxMRY+yP3vQiOusEvg5nfBvUSd0hp71N+sTSO6pXmf4Kz1QuRMERPdXoNuR4NmK5zPbm1B9KRMd3jc",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755540288.908131,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "yuid",
+      "value": "1DFF6E425B0B853587702E54C596BCB5",
+      "domain": "www.yodobashi.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "yid",
+      "value": "1DFF6E425B0B853587702E54C596BCB5",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1790093103.425518,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gcl_au",
+      "value": "1.1.261118808.1755533105",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1763309105,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.2.538292876.1755533105",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755623102,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_yjsu_yjad",
+      "value": "1755533105.54a5a996-d60a-411e-83d3-2433fb8a47da",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1787069105,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "personalization_id",
+      "value": "\"v1_rZT58wRHnz18CDBxCY1cag==\"",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1790093105.970347,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "muc_ads",
+      "value": "e5d28615-f96d-4658-9cdb-4735db125635",
+      "domain": ".t.co",
+      "path": "/",
+      "expires": 1790093105.991375,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "newses",
+      "value": "0",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1790096701.96735,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "hty_login_time",
+      "value": "\"100000001003891482-1755533111825_100000001003474500-1755403596653_100000001000320349-1752741871542_100000001005167373-1751679607487_100000001003645146-1751679522611_100000001003674858-1751675093438_100000001001475448-1751675085825_100000001009012319-1751242416961_100000001008096498-1751073817042_100000001001611667-1746836469766:\"",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1787072703.025356,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_dc_gtm_UA-34284167-1",
+      "value": "1",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755536747,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__cf_bm",
+      "value": "oaDNVmlx6fQJcSqJN312W3pqX3mWmPYIVXYVKvRQDUk-1755536688-1.0.1.1-U0Uiii3KGSHZ.nR2MMTNaQ9r2zp5qrslwAsN9f5Y7qIcuDL.o9wXIvLDQncy_CJ.Vah9J_dTDWfUNxypz4vdci4xPEO7HMzdOtDUUtY6Q5U",
+      "domain": ".t.co",
+      "path": "/",
+      "expires": 1755538488.186749,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__cf_bm",
+      "value": "x0YucDVHW9IZMe3ZnKiKNuoJ7fYRKG7IN7zckiBk0VI-1755536688-1.0.1.1-j1kesGuyCvmvlVEs1FBfn2F9pTGqCRLBT4QmNgbYtv9eek4ZgZJknewCZLG.IB4_L_Y61ebB10mLCcQcM_7eKskJwZ06Yi9Q_TeviDV1YFo",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1755538488.207658,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUnSSLWR8aRNoowjEF9Xd50xxjqZkUuXTzqjelqo0mRcPDGIu_8avv6I2ZUv",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1790096693.049072,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "secure_id",
+      "value": "BC5C4BCE20C7FFE8DDA681422059C76E485EB3DBE84214FC96CFC8F840F7B7C4CD60C949600E66D40347CCDE2553876804483C0C5CD2551C4B2C88982FE6173C94C65CE3FB28698D0F3543CCC78ECDC74F1A26CEB93FED342B32A14AEF2BC19FB7133AE684F15A842AF8BDF1D8527FD8968447C5ECA1AB4FB81A6D359E545863",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "auto_id",
+      "value": "9A7MEvtuskG4fi9rFLnCLbwJdCCsABVPkwGFASMkXgwBJQh4dGkWsemPkvETYRotZxSpF4qW8QRcY5xt",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1787072701.36195,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "vf",
+      "value": "8077886BE14E0000205CADC5377E993345EDC2934217D2471CEA0235BF4DE01C52B06BB899569B340A4054D0EBAD30D6560BF9CC02A258DE7884B02776B41744",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755540301.362006,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "yatpz",
+      "value": "C1A2XJax%2BLPLYuRQDc%2BFUjsCBK1aMyeJibPzjyCNtdBuw8GNCZNpAM1EiQ%3D%3D",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1763312701.362097,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "yjsid",
+      "value": "CE6950E73603EE96C37A9FD133C380A0",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_abck",
+      "value": "0D79859B6AC034C59E1FAFFD07059806~0~YAAQzb0oFw+dSq2YAQAAsjckvg6CdcF5PB3ORN9SSjZDy4bjqYH1gg12oorOIFIbgUo2jIYw4yRaKICk3xXAX9Ou55Xar96723AiWgTt2iFh4bTyU92/Tbi2k7XMyuLSUuVk8t1vxl1wamLo5V3ku0bmvJkGlj8MHgMUaxZzz2OLvX6C1KxxKRo8crJoV+sHH0TWeguBBN/91vf9WRbPh+JMOe4qb6t8fFh1/zCaAzqwFEmEu/cN2gWU0uOJugCmGX80giYO6PIHgmgvvu4IEIZerVR0wV2crsjZCRPUifE82ozEVoXt7akxrxLVY32UbnYiieK7woIXLkTH/+eNg5vAiT2PnvuWEUMdnDYOR+a1pIwYX0UyayvHykrdfzkkJg01qOHwjR4osHOR0xUiNY4UWypZ7Xr5lry5eDYsuJVxFCxV32tW00cBM9ieKsAiRjqXlU27sy+KzxjU6m+pVrX8uAdDUHdObsxWH6KLiYEoHceid+aRiLUBWAQ2x6GwusLLd+sNOSUQHqBodv47wOpYG6bFwFhdEglVMS5eUgvY7Su//LhEulPCJsTpeBBwal9lwyEwj8DybO4QG10S6kOAvvtoLSVRokessnOrXmYeJ6DToUed1HPBRXpQVu6r8ru9wf8OZhhgA6XLjYeg7iAzOX9a+QWg6e3sZpMCqQ9vIAuXVBWSfQqk9kNA/I4hU3OhPpeqEN7QWTiHr9yZ5E5wVXInLL5eV+89rgGxod4Zkt4TN5GjuFAJH8cuRyvlhgshwxHvYMBTKAhGQbsZ1JTrVlaRP2Wme0xw5CnQw3S3EfPmTl7EwBdHVueNpQnunaRL7Nsk/oVphZ9K7aRgOMPX7sgJe7qL/uFZv1u7bWoGncLPncY8ZfmiRl6LFT3Mp598g0fe0zTG9jmmN60QP3OSquIS+pO+TEbjQRWCC7wIp17wZb7DXKH4b+wIjjBKrJ1DWepgopgRgsQd9Q==~-1~-1~-1",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1787072701.362246,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "uq",
+      "value": "6440b6b8b8ffac4403d541584106b7c63962daaa",
+      "domain": "www.yodobashi.com",
+      "path": "/",
+      "expires": 1790096701.967525,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "google_crmid",
+      "value": "YjA3NTVlNzk2NzlkMGFhMzQxOGI0NWNhMGQyNjhjZWI%3D",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1790096701.967826,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "06730BD86C5A847D035414723210D3C8",
+      "domain": "www.yodobashi.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "RT",
+      "value": "\"z=1&dm=www.yodobashi.com&si=14b36661-087c-41d9-a97b-f4d3f8b5622c&ss=mehd7s8o&sl=1&tt=29o&rl=1\"",
+      "domain": ".www.yodobashi.com",
+      "path": "/",
+      "expires": 1756141502,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_HK44VQT0MD",
+      "value": "GS2.1.s1755536687$o2$g1$t1755536702$j45$l0$h0",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1790096702.205062,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.2.754572740.1755533105",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1790096702.210024,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "dduif",
+      "value": "\"9A7MEvtuskG4fi9rFLnCLbwJdCCsABVPkwGFASMkXgwBJQh4dGkWsemPkvETYRotZxSpF4qW8QRcY5xt,doYxekaiWSYUynnKVMqwNHaGMXpGolkmgQWB99vPTrw=,1,4b6RPEC+koRHkvW4gnQg3dcdog3Vfwp+c3JSwyIK6wKyPAO4sZPhKA==,0\"",
+      "domain": "www.yodobashi.com",
+      "path": "/",
+      "expires": 1763312702.565938,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "tlg_lid",
+      "value": "cthwhbkkrcovlcrqzSEOe3vTpWjiLORkdPJa6A%3D%3D",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1763312702.616109,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ycn",
+      "value": "\"9A7MEvtuskG4fi9rFLnCLbwJdCCsABVPkwGFASMkXgwBJQh4dGkWsemPkvETYRotZxSpF4qW8QRcY5xt:b0755e79679d0aa3418b45ca0d268ceb\"",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1763312702.616233,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "bm_sz",
+      "value": "F20927F0235A37190397FA99C7FD8787~YAAQzb0oF3SdSq2YAQAA8j4kvhyGqhQpGv3u3NzbGIZez3WCm/gHfB7wdeCOLH3KwJoCcDWbkI7dtOFrETgyPwqunemGnLJTeBa7m9w/63fQvz49SHCYe0EH+9iAO+Ov5wd8tS8tW9u6J3U6le/sXdWD1Dtl+UNei05jTU+bWalXki2RSLVmdIqdy9eh5fbVrM2arSdfnG2qW/23SbAlYuc/rXSSaK06ogLDdiSFjP+S7U4vm0R6cgkVKM4qehiOG3k1QpAjmP2+JENGTYn0dHeBiQY0aBHahrbOhsX5aEiO3i04xHuYl3UdZt5KrkoBOi23OD8QIUsGXfNAplOlrqPku5P1GmJsYvI/KKoREbE7JyTllYcXSWQIbr1gBd7tJK9L3Rv8teGRUZiWgTQiMqEO3J7H4EZsNyDchL4nP+CvjpcSh3Tp87KRWgfrCTXyR3X6swHDw4mXRM7G782//RdmseggtbrQKTyJZ+EHBytvuBIEpYdXO6cUecsVlH3M6Mj7HNM1mtGwmLY=~3422003~4272179",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755547488.217748,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "bm_sv",
+      "value": "553AD4909236300C21D388E7C3DFA4E5~YAAQzb0oF3ydSq2YAQAAlj8kvhywelzwjCrvsGCIwn89zBI23L0Cz7KVfjoiTLp6m3ri2S2gEKQthAJT69ZYx8N9KiH5uxXp3rBfk66O8PmHnyDbeT2dg3Xjjyn6Q591HxVc1KR3cjvXjm+S/NFqzdoBJJ1PGFrt67UASvn/vMSEzlEmSXxgV5LoRqKrZLrmERk497LnEgnc1p/f4/u49RsZJ6PjmPQBA65Oe3HLKkPgt4fOFydo9OdBo72vjlX2WS0hkg==~1",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1755540302.381757,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__ukwlgck",
+      "value": "9894717.640611869.0_4_250174478.1755536705472_250174478.896379054.1755536705472",
+      "domain": ".yodobashi.com",
+      "path": "/",
+      "expires": 1790096705.473899,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://www.yodobashi.com",
+      "localStorage": [
+        {
+          "name": "_gcl_ls",
+          "value": "{\"schema\":\"gcl\",\"version\":1,\"gcl_ctr\":{\"value\":{\"value\":0,\"creationTimeMs\":1755533105140},\"expires\":1763309105140}}"
+        },
+        {
+          "name": "_yjsu_yjad",
+          "value": "1755533105.54a5a996-d60a-411e-83d3-2433fb8a47da"
+        }
+      ]
+    }
+  ]
+}
