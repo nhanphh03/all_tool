@@ -205,6 +205,15 @@ async function gotoPage(page, url) {
     return page;
 }
 
+async function gotoBillPage(page, linkBill) {
+    linkBill = linkBill.slice(0, -2);
+
+    const randomTwoDigits = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+    linkBill += randomTwoDigits;
+
+    await gotoPage(page, linkBill);
+}
+
 async function createChildPages(context, product ) {
 
     try {
@@ -489,11 +498,15 @@ async function processSingleBrowser(browser, browserIndex) {
         const quantityProduct = browser.pageProduct.quantity;
 
         await addProductToCard(pageProduct, quantityProduct);
-        await proceedToCheckoutStep1( pageProduct );
-        await proceedToCheckoutStep2( pageProduct );
-        await enterSecurityCode(pageProduct, cvv);
 
-        // await confirmOrder(pageProduct);
+        let linkBill = browser.user.nodeStateKey;
+        await gotoBillPage(pageProduct, linkBill);
+
+        // await proceedToCheckoutStep1( pageProduct );
+        // await proceedToCheckoutStep2( pageProduct );
+
+        await enterSecurityCode(pageProduct, cvv);
+        await confirmOrder(pageProduct);
 
         console.log("Đặt thành công đơn hàng ! --- ", browser.user.username);
         const endChild = new Date();

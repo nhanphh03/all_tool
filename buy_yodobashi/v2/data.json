@@ -4,31 +4,36 @@
       "username": "jrevexozip@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "982",
-      "status": "no"
+      "status": "no",
+      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=3434303030304336506469324850333332313534407963746566613135"
     },
     {
       "username": "hotrocuocsong.nhatban@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "404",
-      "status": "no"
+      "status": "no",
+      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=6239303030306f4b686469324a4e333332313534407963746566613135"
     },
     {
       "username": "z.arinacanario@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "685",
-      "status": "no"
+      "status": "no",
+      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=7a33303030306538506469326b31343332313534407963746566613135"
     },
     {
       "username": "fakeehah3@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "714",
-      "status": "yes"
+      "status": "yes",
+      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=6445303030306238356169323747333332313534407963746566613135"
     },
     {
       "username": "wakemanrozelliacpmp@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "685",
-      "status": "yes"
+      "status": "yes",
+      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=6f643030303076417a636932354e333332313534407963746566613135"
     }
   ],
   "product": {
