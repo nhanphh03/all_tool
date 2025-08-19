@@ -33,15 +33,15 @@
   ],
   "product": {
     "link": "https://www.yodobashi.com/product/100000001003891482/",
-    "quantity": 2
+    "quantity": 3
   },
   "config": {
     "loginLink": "https://order.yodobashi.com/yc/login/index.html?returnUrl=https%3A%2F%2Fwww.yodobashi.com%2F%3Flogout%3Dtrue%26yclogout%3Dtrue",
     "loginOut": "https://order.yodobashi.com/ec/login/logout.do",
     "cardLink": "https://order.yodobashi.com/yc/shoppingcart/index.html",
     "homeLink": "https://www.yodobashi.com/",
-    "hourRun": 0,
-    "minuteRun": 42,
+    "hourRun": 7,
+    "minuteRun": 30,
     "secondRun": 1
   }
 }
