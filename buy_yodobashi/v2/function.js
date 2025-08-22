@@ -299,18 +299,18 @@ async function configBrowser(product, users, jsonConfig) {
                 const pageHome = await context.newPage();
                 const pageLogout = await context.newPage();
 
-                if (isCookie) {
-                    console.log("Có cookie, vào trang chủ kiểm tra trạng thái cookie !")
-                    await gotoPage(pageHome, jsonConfig.homeLink);
-                    const isAvailable = await checkLoginLink(pageHome);
-                    if(isAvailable){
-                        console.log("Cookie không khả dụng, thực hiện đăng nhập lại !");
-                    }else{
-                        console.log("Cookie khả dụng, thực hiện đăng xuất ra và đăng nhập lại !")
-                        await gotoPage(pageLogout, jsonConfig.loginOut);
-                        console.log("Đăng xuất thành công! Thực hiện đăng nhập lại ")
-                    }
-                }
+                // if (isCookie) {
+                //     console.log("Có cookie, vào trang chủ kiểm tra trạng thái cookie !")
+                //     await gotoPage(pageHome, jsonConfig.homeLink);
+                //     const isAvailable = await checkLoginLink(pageHome);
+                //     if(isAvailable){
+                //         console.log("Cookie không khả dụng, thực hiện đăng nhập lại !");
+                //     }else{
+                //         console.log("Cookie khả dụng, thực hiện đăng xuất ra và đăng nhập lại !")
+                //         await gotoPage(pageLogout, jsonConfig.loginOut);
+                //         console.log("Đăng xuất thành công! Thực hiện đăng nhập lại ")
+                //     }
+                // }
                 console.log("Thực hiện đăng nhập cho user: ",  user.username);
                 const navigationSuccess = await navigateToPage(pageHome, jsonConfig.loginLink);
                 if (navigationSuccess) {
@@ -506,7 +506,7 @@ async function processSingleBrowser(browser, browserIndex) {
         // await proceedToCheckoutStep2( pageProduct );
 
         await enterSecurityCode(pageProduct, cvv);
-        await confirmOrder(pageProduct);
+        // await confirmOrder(pageProduct);
 
         console.log("Đặt thành công đơn hàng ! --- ", browser.user.username);
         const endChild = new Date();
