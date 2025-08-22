@@ -1,1 +1,0 @@
-trước khi chạy xoá hết sản phẩm trong giỏ hàng
