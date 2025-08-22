@@ -25,7 +25,7 @@
       "username": "fakeehah3@gmail.com",
       "password": "Mrngoan0812",
       "cvv": "714",
-      "status": "yes",
+      "status": "no",
       "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=6445303030306238356169323747333332313534407963746566613135"
     },
     {
@@ -33,11 +33,11 @@
       "password": "Mrngoan0812",
       "cvv": "685",
       "status": "yes",
-      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=6f643030303076417a636932354e333332313534407963746566613135"
+      "nodeStateKey": "https://order.yodobashi.com/yc/order/confirm/index.html?nodeStateKey=7038303030307568786569323532343332313534407963746566613135"
     }
   ],
   "product": {
-    "link": "https://www.yodobashi.com/product/100000001003891482/",
+    "link": "https://www.yodobashi.com/product/100000001002968995/",
     "quantity": 3
   },
   "config": {
@@ -45,8 +45,8 @@
     "loginOut": "https://order.yodobashi.com/ec/login/logout.do",
     "cardLink": "https://order.yodobashi.com/yc/shoppingcart/index.html",
     "homeLink": "https://www.yodobashi.com/",
-    "hourRun": 7,
-    "minuteRun": 30,
+    "hourRun": 22,
+    "minuteRun": 13,
     "secondRun": 1
   }
 }
